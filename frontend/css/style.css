@@ -1,0 +1,118 @@
+/* default styles common for all pages  */
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+
+  background: rgb(238, 174, 202);
+  background: radial-gradient(
+    circle,
+    rgba(238, 174, 202, 1) 0%,
+    rgba(148, 187, 233, 1) 100%
+  );
+}
+/* header  */
+/* navstyle / header style */
+nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  border-bottom: 2px solid aqua;
+}
+nav ul {
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  background-color: black;
+  color: white;
+  list-style: none;
+}
+nav a {
+  padding: 5px 10px;
+  margin: 2px 1rem;
+
+  font-weight: 600;
+
+  color: aliceblue;
+  text-decoration: none;
+}
+
+nav a:hover {
+  background-color: aqua;
+  color: black;
+}
+
+.banner {
+  color: white;
+  background-color: #4a4a49;
+  margin-top: 1rem;
+  padding: 1rem 0rem 0rem 0rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.banner h1 {
+  padding: 2rem 0rem 1rem 0rem;
+  font-size: 5rem;
+}
+
+/* common section */
+
+section {
+  display: flex;
+  flex-direction: column;
+  width: 70vw;
+  min-width: 255px;
+  margin: 0 auto;
+}
+section > h1 {
+  font-family: "Orbitron", sans-serif;
+  text-align: center;
+  margin: 5px;
+  margin-top: 0.5rem;
+  padding: 1rem;
+  font-size: 2rem;
+}
+/* footer  */
+
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: rgb(18, 18, 18);
+  color: white;
+  justify-content: space-evenly;
+
+  width: 100%;
+}
+.footer-title {
+  padding: 2rem;
+  font-size: 3rem;
+  font-weight: 600;
+}
+
+.footer-icons {
+  padding: 2rem;
+  /* background-color: blanchedalmond; */
+}
+.footer-icons ul {
+  display: flex;
+  list-style: none;
+  /* background-color: blue; */
+  justify-content: space-around;
+  align-items: center;
+}
+.footer-icons li {
+  margin: 0 1rem;
+}
+
+.footer-icons img {
+  width: 50px;
+  height: 50px;
+}
