@@ -1,0 +1,16 @@
+#about {
+  max-width: 900px;
+  margin: 0 auto;
+  font-size: 22px;
+  padding: 2rem;
+}
+#about h2 {
+  text-align: center;
+}
+#about img {
+  float: left;
+  margin: 20px 50px;
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+}

@@ -1,0 +1,75 @@
+.latest-album,
+.play-btn {
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: transparent;
+  color: white;
+  border: 2px solid cyan;
+  cursor: pointer;
+  margin: 1rem;
+}
+
+.latest-album {
+  padding: 1rem 0.5rem;
+}
+
+.play-btn {
+  width: 80px;
+  height: 80px;
+  font-size: 2rem;
+  border-radius: 50%;
+  color: cyan;
+}
+#tours {
+  /* background-color: blue; */
+  width: 90vw;
+  padding: 2rem;
+  padding-bottom: 2.5rem;
+}
+
+#tours h2 {
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tour-item {
+  padding: 1rem;
+  /* background-color: antiquewhite; */
+  border-bottom: 2px solid black;
+
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-weight: 600;
+  font-weight: 600;
+  /* justify-content: space-between; */
+}
+
+.tour-date {
+  width: 10%;
+  color: #000;
+}
+.tour-place {
+  width: 25%;
+  color: rgb(57, 57, 57);
+}
+.tour-spec-place {
+  width: 50%;
+
+  color: rgb(57, 57, 57);
+}
+.buy-btn {
+  width: 20%;
+  padding: 6px 10px;
+  background-color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  color: aqua;
+}
+
+.buy-btn:hover {
+  background-color: brown;
+}
