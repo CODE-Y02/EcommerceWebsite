@@ -34,7 +34,7 @@ nav ul {
   color: white;
   list-style: none;
 }
-nav a {
+nav ul a {
   padding: 5px 10px;
   margin: 2px 1rem;
 
@@ -44,9 +44,26 @@ nav a {
   text-decoration: none;
 }
 
-nav a:hover {
+nav ul a:hover {
   background-color: aqua;
   color: black;
+}
+
+/* cart  */
+nav > a {
+  position: absolute;
+  top: 5px;
+
+  right: 1.5rem;
+  padding: 0.5rem;
+  text-decoration: none;
+  color: white;
+  border: 2px solid cyan;
+}
+nav > a span {
+  position: fixed;
+  top: 0.5rem;
+  right: 0.5rem;
 }
 
 .banner {
@@ -116,4 +133,86 @@ footer {
 .footer-icons img {
   width: 50px;
   height: 50px;
+}
+
+/* cart tray */
+
+#cart {
+  background-color: antiquewhite;
+  width: 20vw;
+  min-width: 255px;
+  position: fixed;
+  top: 3rem;
+  right: 0;
+  bottom: 0;
+  padding: 2rem;
+  margin-top: 0.5rem;
+  border: 2px solid red;
+}
+
+#cart > h2 {
+  text-align: center;
+  margin: 5px 10px;
+}
+
+#cart .cancel {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0.5rem;
+  background-color: transparent;
+}
+
+.cart-row {
+  display: flex;
+  /* background-color: blueviolet; */
+  justify-content: space-evenly;
+}
+
+.cart-item,
+.cart-price,
+.cart-quantity {
+  padding: 0.5rem;
+  margin: 0 0.5rem;
+  font-weight: 600;
+  border-bottom: 2px solid black;
+}
+
+.cart-column {
+  flex: 0.3;
+  text-align: center;
+}
+
+.cart-total {
+  align-self: flex-end;
+
+  display: flex;
+  margin: 0.5rem;
+  font-size: 1.5rem;
+
+  /* background-color: blueviolet; */
+
+  display: flex;
+  justify-content: end;
+}
+
+.cart-total span {
+  padding: 0 10px;
+  /* margin-right: 10px; */
+}
+
+.purchase-btn {
+  width: 30%;
+  min-width: 100px;
+  padding: 10px;
+  margin: 2rem 0;
+  align-self: center;
+
+  background-color: cyan;
+  border: none;
+}
+
+.purchase-btn:hover {
+  background-color: brown;
+  color: aliceblue;
 }
