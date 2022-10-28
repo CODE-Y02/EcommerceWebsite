@@ -73,6 +73,7 @@ section {
   margin: 0 auto;
 }
 section > h1 {
+  text-shadow: 2px 2px 2px cyan;
   font-family: "Orbitron", sans-serif;
   text-align: center;
   margin: 5px;
