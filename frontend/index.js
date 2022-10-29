@@ -47,5 +47,8 @@ parentEle.addEventListener("click", (e) => {
 
     // console.log(new_cart_item);
     cart_items.appendChild(new_cart_item);
+
+    let oldCartCount = Number(document.querySelector(".cart-number").innerText);
+    document.querySelector(".cart-number").innerText = oldCartCount + 1;
   }
 });
