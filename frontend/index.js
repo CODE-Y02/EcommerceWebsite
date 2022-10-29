@@ -69,3 +69,10 @@ parentEle.addEventListener("click", (e) => {
     cartBox.style = "display:none;";
   }
 });
+
+//cart at nav
+const cart_btn = document.querySelector(".cart-holder");
+cart_btn.addEventListener("click", (e) => {
+  e.preventDefault();
+  document.getElementById("cart").style.display = "flex";
+});
