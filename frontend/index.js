@@ -1,6 +1,8 @@
 const parentEle = document.getElementById("Ecomm");
 const cart_items = document.querySelector("#cart .cart-items");
 
+const cartBox = document.getElementById("cart");
+
 // console.log(parentEle);
 
 parentEle.addEventListener("click", (e) => {
@@ -20,7 +22,9 @@ parentEle.addEventListener("click", (e) => {
 
     // console.log(price);
 
-    let total_cart_price = document.querySelector("#total-value").innerText;
+    let total_cart_price = Number(
+      document.querySelector("#total-value").innerText
+    );
     if (document.querySelector(`#in-cart-${id}`)) {
       alert("This item is already added to the cart");
       return;
@@ -39,7 +43,7 @@ parentEle.addEventListener("click", (e) => {
       </span>
       <span class="cart-price cart-column">${price} $</span>
       <span class="cart-quantity cart-column">
-          <input type="text">
+          <input type="number" min="1" value="1" required>
           <button>REMOVE</button>
       </span>
 
@@ -68,12 +72,17 @@ parentEle.addEventListener("click", (e) => {
     setTimeout(() => {
       notification.remove();
     }, 2000);
+
+    //update price
+    document.querySelector("#total-value").innerText =
+      Number(total_cart_price) + Number(price);
   }
 
-  // console.log(e.target.className);
-  // console.log(e.target.id);
+  console.log(e.target.className);
+  console.log(e.target.id);
 
-  const cartBox = document.getElementById("cart");
+  //removefrom cart
+
   if (e.target.id === "display-cart") {
     //show cart
 
@@ -94,3 +103,5 @@ cart_btn.addEventListener("click", (e) => {
   e.preventDefault();
   document.getElementById("cart").style.display = "flex";
 });
+
+//
