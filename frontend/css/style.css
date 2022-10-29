@@ -138,81 +138,111 @@ footer {
 /* cart tray */
 
 #cart {
-  background-color: antiquewhite;
-  width: 20vw;
-  min-width: 255px;
   position: fixed;
+  width: 500px;
   top: 3rem;
   right: 0;
   bottom: 0;
-  padding: 2rem;
-  margin-top: 0.5rem;
+  padding: 20px;
+  margin-top: 10px;
+  background-color: aqua;
   border: 2px solid red;
+  /* 
+  display: flex;
+  flex-direction: column;
+  align-items: center; */
 }
 
 #cart > h2 {
   text-align: center;
-  margin: 5px 10px;
 }
 
-#cart .cancel {
+.cancel {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 0.5rem;
+  top: 20px;
+  right: 20px;
+  padding: 5px;
   background-color: transparent;
 }
 
 .cart-row {
+  /* background-color: lightcoral; */
+  width: 100%;
+
   display: flex;
-  /* background-color: blueviolet; */
-  justify-content: space-evenly;
+
+  margin: 5px;
+  padding: 5px;
 }
 
-.cart-item,
-.cart-price,
-.cart-quantity {
-  padding: 0.5rem;
-  margin: 0 0.5rem;
+.cart-header {
+  font-size: 18px;
   font-weight: 600;
-  border-bottom: 2px solid black;
+  /* background-color: blueviolet; */
+}
+
+.cart-item {
+  width: 45%;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+  margin: 0 auto;
+  font-weight: 600;
+}
+.cart-item img {
+  width: 50px;
+  height: 50px;
+  margin: 2px;
+}
+.cart-price {
+  width: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.cart-quantity {
+  width: 35%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cart-quantity input {
+  width: 20px;
+  padding: 5px;
+  border: 1px solid gray;
+  border-radius: 2px;
+  margin-left: 10px;
+}
+.cart-quantity button {
+  padding: 5px 10px;
+  background-color: red;
+  color: white;
+  margin-right: 10px;
 }
 
 .cart-column {
-  flex: 0.3;
+  margin: 0 2px;
+  /* background-color: aquamarine; */
   text-align: center;
+  padding: 5px;
+  border-bottom: 1px solid black;
 }
 
 .cart-total {
-  align-self: flex-end;
-
   display: flex;
-  margin: 0.5rem;
-  font-size: 1.5rem;
-
-  /* background-color: blueviolet; */
-
-  display: flex;
-  justify-content: end;
-}
-
-.cart-total span {
-  padding: 0 10px;
-  /* margin-right: 10px; */
+  justify-content: flex-end;
+  padding: 10px;
+  font-size: 24px;
+  margin: 5px;
 }
 
 .purchase-btn {
-  width: 30%;
-  min-width: 100px;
-  padding: 10px;
-  margin: 2rem 0;
+  width: 125px;
+  padding: 5px 10px;
   align-self: center;
-
-  background-color: cyan;
-  border: none;
-}
-
-.purchase-btn:hover {
-  background-color: brown;
-  color: aliceblue;
+  font-size: 18px;
 }
