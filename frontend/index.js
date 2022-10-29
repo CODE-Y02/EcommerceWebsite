@@ -50,6 +50,24 @@ parentEle.addEventListener("click", (e) => {
 
     let oldCartCount = Number(document.querySelector(".cart-number").innerText);
     document.querySelector(".cart-number").innerText = oldCartCount + 1;
+
+    //notification
+    //
+    const notiBox = document.getElementById("notification-wrap");
+
+    let notification = document.createElement("div");
+    notification.innerHTML = `<div><p><span> ${name}</span> ADDED TO CART SUCCESSFULLY </p><br><p>TOTAL ITEMS : <span>${
+      oldCartCount + 1
+    }</span></p></div>`;
+    //add class to notification
+    notification.classList.add("toast");
+
+    notiBox.appendChild(notification);
+
+    // set timer to remove
+    setTimeout(() => {
+      notification.remove();
+    }, 2000);
   }
 
   // console.log(e.target.className);

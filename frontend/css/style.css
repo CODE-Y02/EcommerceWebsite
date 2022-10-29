@@ -248,3 +248,26 @@ footer {
   align-self: center;
   font-size: 18px;
 }
+
+/* notification */
+#notification-wrap {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+}
+
+.toast {
+  border-radius: 2px;
+  padding: 0.5rem;
+  margin: 5px;
+  background-color: rgba(192, 1, 1, 0.809);
+  color: yellow;
+  border-radius: 10px;
+}
+
+.toast span {
+  color: rgb(0, 238, 255);
+  font-weight: 800;
+
+  margin: 0 5px;
+}
