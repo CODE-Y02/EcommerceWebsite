@@ -51,4 +51,21 @@ parentEle.addEventListener("click", (e) => {
     let oldCartCount = Number(document.querySelector(".cart-number").innerText);
     document.querySelector(".cart-number").innerText = oldCartCount + 1;
   }
+
+  // console.log(e.target.className);
+  // console.log(e.target.id);
+
+  const cartBox = document.getElementById("cart");
+  if (e.target.id === "display-cart") {
+    //show cart
+
+    cartBox.style.display = "flex";
+
+    console.log(document.querySelector("#cart"));
+  }
+
+  if (e.target.className == "cancel") {
+    // hide cart
+    cartBox.style = "display:none;";
+  }
 });

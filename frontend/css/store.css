@@ -107,9 +107,6 @@ section {
   padding: 1rem;
 
   background-color: black;
-}
-
-.btn-wrap a {
-  text-decoration: none;
-  color: white;
+  color: aliceblue;
+  cursor: pointer;
 }
