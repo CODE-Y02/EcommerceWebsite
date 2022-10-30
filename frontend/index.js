@@ -10,6 +10,7 @@ parentEle.addEventListener("click", (e) => {
 
   //   console.log(e.target.className);
 
+  //add new item
   if (e.target.className == "shop-item-btn btn") {
     const id = e.target.parentElement.parentElement.id;
     // console.log(id)
@@ -44,7 +45,7 @@ parentEle.addEventListener("click", (e) => {
       <span class="cart-price cart-column">${price} $</span>
       <span class="cart-quantity cart-column">
           <input type="number" min="1" value="1" required>
-          <button>REMOVE</button>
+          <button class="remove">REMOVE</button>
       </span>
 
     `;
@@ -78,8 +79,46 @@ parentEle.addEventListener("click", (e) => {
       Number(total_cart_price) + Number(price);
   }
 
-  console.log(e.target.className);
-  console.log(e.target.id);
+  // remove from cart
+  if (e.target.className === "remove") {
+    // console.log("rem");
+    // console.log(e.target.parentElement);
+    const cart_item_id = e.target.parentElement.parentElement.id;
+    let qty = document.querySelector(`#${cart_item_id} input`).value;
+    let price = document
+      .querySelector(`#${cart_item_id} .cart-price`)
+      .innerText.slice(0, -1);
+    // price = Number(price);
+    qty = Number(qty);
+
+    // console.log(price);
+
+    let total_cart_price = document.querySelector(`#total-value`).innerText;
+
+    // console.log(total_cart_price);
+
+    document.querySelector(`#total-value`).innerText =
+      Number(total_cart_price) - price;
+
+    if (qty == 1) {
+      document.getElementById(`${cart_item_id}`).remove();
+
+      //update cart item number at top
+      let oldCartCount = document.querySelector(".cart-number");
+
+      oldCartCount.innerText = Number(oldCartCount.innerText) - 1;
+    } else {
+      document.querySelector(`#${cart_item_id} input`).value = qty - 1;
+    }
+
+    //updateprice
+
+    document.querySelector(`#total-value`).innerText =
+      Number(total_cart_price) - price;
+  }
+
+  // console.log(e.target.className);
+  // console.log(e.target.id);
 
   //removefrom cart
 
@@ -104,4 +143,4 @@ cart_btn.addEventListener("click", (e) => {
   document.getElementById("cart").style.display = "flex";
 });
 
-//
+//update Total price

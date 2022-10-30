@@ -278,9 +278,9 @@ footer {
 }
 
 /* responsive */
-@media only screen and (max-width: 600px) {
+/* @media only screen and (max-width: 600px) {
   #cart {
     position: static;
     width: 100%;
   }
-}
+} */
