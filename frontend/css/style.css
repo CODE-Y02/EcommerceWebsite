@@ -31,6 +31,7 @@ nav {
 nav ul {
   padding: 1rem;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   background-color: black;
   color: white;
@@ -87,7 +88,6 @@ nav > a span {
 section {
   display: flex;
   flex-direction: column;
-  width: 70vw;
   min-width: 255px;
   margin: 0 auto;
 }

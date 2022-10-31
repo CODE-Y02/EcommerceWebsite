@@ -32,93 +32,9 @@
     </header>
     <!-- main -->
     <main id="Ecomm">
-      <section>
-        <h1>Music</h1>
-        <div class="items">
-          <div class="item" id="item1">
-            <h1>Album 1</h1>
-            <div class="img-wrap">
-              <img src="./img/Album1.png" alt="" />
-            </div>
-            <div class="product-details">
-              <span>
-                200
-                <span> $ </span>
-              </span>
-              <button class="shop-item-btn btn">ADD TO CART</button>
-            </div>
-          </div>
-          <div class="item" id="item2">
-            <h1>Album 2</h1>
-            <div class="img-wrap">
-              <img src="./img/Album2.png" alt="" />
-            </div>
-            <div class="product-details">
-              <span>
-                20
-                <span> $ </span>
-              </span>
-              <button class="shop-item-btn btn">ADD TO CART</button>
-            </div>
-          </div>
-          <div class="item" id="item3">
-            <h1>Album 3</h1>
-            <div class="img-wrap">
-              <img src="./img/Album3.png" alt="" />
-            </div>
-            <div class="product-details">
-              <span>
-                100
-                <span> $ </span>
-              </span>
-              <button class="shop-item-btn btn">ADD TO CART</button>
-            </div>
-          </div>
-          <div class="item" id="item4">
-            <h1>Album 4</h1>
-            <div class="img-wrap">
-              <img src="./img//Album4.png" alt="" />
-            </div>
-            <div class="product-details">
-              <span>
-                500
-                <span> $ </span>
-              </span>
-              <button class="shop-item-btn btn">ADD TO CART</button>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section>
-        <h1>MERCH</h1>
-        <div class="items">
-          <div class="item" id="t-shirt">
-            <h1>T - shirt</h1>
-            <div class="img-wrap">
-              <img src="./img/Shirt.png" alt="" />
-            </div>
-            <div class="product-details">
-              <span>
-                1000
-                <span> $ </span>
-              </span>
-              <button class="shop-item-btn btn">ADD TO CART</button>
-            </div>
-          </div>
-          <div class="item" id="cofee">
-            <h1>Cofee</h1>
-            <div class="img-wrap">
-              <img src="./img/Cofee.png" alt="" />
-            </div>
-            <div class="product-details">
-              <span>
-                500
-                <span> $ </span>
-              </span>
-              <button class="shop-item-btn btn">ADD TO CART</button>
-            </div>
-          </div>
-        </div>
+      <section id="prod-list-wrap">
+        <h1>PRODUCTS</h1>
+        <div id="products"></div>
       </section>
       <!-- cart  -->
       <section id="cart" class="container" style="display: none">
@@ -196,5 +112,9 @@
 
     <!-- notification div -->
     <div id="notification-wrap"></div>
+
+    <!-- cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- <script src="./index2.js"></script> -->
   </body>
 </html>
