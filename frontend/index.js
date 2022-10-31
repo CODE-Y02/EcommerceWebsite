@@ -51,7 +51,7 @@ cart_btn.addEventListener("click", (e) => {
 //update Total price
 function updateTotalPrice() {
   const items_rows = cart_items.getElementsByClassName("cart-row");
-  console.log(items_rows);
+  // console.log(items_rows);
   let total = 0;
   for (let i = 0; i < items_rows.length; i++) {
     // console.dir(items_rows[i].children[1].innerText.slice(0, -1));
@@ -60,7 +60,7 @@ function updateTotalPrice() {
     let price = items_rows[i].children[1].innerText.slice(0, -1);
     let qty = items_rows[i].children[2].children[0].value;
 
-    total = Number(price) * Number(qty);
+    total += Number(price) * Number(qty);
   }
 
   // round my 2
