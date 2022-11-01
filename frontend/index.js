@@ -214,6 +214,7 @@ async function fetchCart() {
     console.log(res.data);
 
     // display on cart
+    document.querySelector("#cart .cart-items").innerHTML = "";
     res.data.map((item) => {
       // console.log(item);
       displayProductOnCart(item);
