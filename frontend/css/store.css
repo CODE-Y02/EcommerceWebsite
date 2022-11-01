@@ -7,25 +7,8 @@ main {
   display: flex;
   flex-direction: column;
 }
-/* 
-section {
-  display: flex;
-  flex-direction: column;
-  width: 60vw;
-  min-width: 255px;
-  margin: 0 auto;
-} */
 
-/* section > h1 {
-  font-family: "Orbitron", sans-serif;
-  text-align: center;
-  margin: 5px;
-  margin-top: 0.5rem;
-  padding: 1rem;
-  font-size: 2rem;
-} */
-
-.items {
+#products {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
