@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       //   console.log(product);
       displayProductOnDOM(product);
     });
+
+    //fetch cart
+    fetchCart();
   } catch (error) {
     console.log(error);
   }
@@ -15,7 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 document.querySelector(".cart-holder").addEventListener("click", (e) => {
   e.preventDefault();
-  fetchCart();
+
   showCart();
 });
 
@@ -103,15 +106,6 @@ function displayProductOnCart(item) {
 
   cartItems.appendChild(new_cart_item);
 
-  let notification = document.createElement("div");
-  notification.innerHTML = `<div><p><span> ${name}</span> ADDED TO CART SUCCESSFULLY </p><br><p>TOTAL ITEMS : <span>${Number(
-    cartCounter(1)
-  )}</span></p></div>`;
-  //add class to notification
-  notification.classList.add("toast");
-
-  createNotification(notification);
-
   //update price
   updateTotalPrice();
 }
@@ -142,21 +136,26 @@ function removeFromCart(cart_item_id) {
   updateTotalPrice();
 }
 
-//inc dec cart count
-function cartCounter(inc, dec) {
-  let count = document.querySelector(".cart-number");
-  if (inc) {
-    count.innerText = Number(count.innerText) + 1;
-  }
-  if (dec) {
-    count.innerText = Number(count.innerText) - 1;
-  }
-  return count.innerText;
-}
+// //inc dec cart count
+// function cartCounter(inc, dec) {
+//   let count = document.querySelector(".cart-number");
+//   if (inc) {
+//     count.innerText = Number(count.innerText) + 1;
+//   }
+//   if (dec) {
+//     count.innerText = Number(count.innerText) - 1;
+//   }
+//   return count.innerText;
+// }
 
 //create notification
-function createNotification(notification) {
+function createNotification(msg) {
   const notiBox = document.getElementById("notification-wrap");
+
+  let notification = document.createElement("div");
+  notification.innerHTML = `<div><p>${msg}</p></div>`;
+  //add class to notification
+  notification.classList.add("toast");
 
   notiBox.appendChild(notification);
 
@@ -195,21 +194,32 @@ async function addToCart(prodID) {
     });
 
     console.log(res);
+
+    // const msg = `SUCCSSSFULLY ADDDED TO CART `;
+
+    createNotification(res.data.message);
+
+    //fetch cart again
+    fetchCart();
   } catch (error) {
     console.log(error);
+    // const msg = `ERROR OCCURED !!!`;
+    createNotification(error.message);
   }
 }
 
 async function fetchCart() {
   try {
     let res = await axios.get("http://localhost:3000/cart");
-    // console.log(res.data);
+    console.log(res.data);
 
     // display on cart
     res.data.map((item) => {
-      console.log(item);
+      // console.log(item);
       displayProductOnCart(item);
     });
+
+    document.querySelector(".cart-number").innerText = res.data.length;
   } catch (error) {
     console.log(error);
   }
