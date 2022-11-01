@@ -13,32 +13,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+document.querySelector(".cart-holder").addEventListener("click", (e) => {
+  e.preventDefault();
+  fetchCart();
+  showCart();
+});
+
 // click event on ecomm
 const ecoom = document.getElementById("Ecomm");
 ecoom.addEventListener("click", (e) => {
   e.preventDefault();
-
-  // console.dir(e.target.parentElement.parentElement);
-  //add to cart
-  if (e.target.classList.contains("shop-item-btn")) {
-    // add to cart func
-    let domProductID = e.target.parentElement.parentElement.id;
-    const prodID = domProductID.slice(5);
-
-    if (document.querySelector(`#in-cart-${prodID}`)) {
-      alert("This item is already added to the cart");
-      return;
-    }
-    let product = {
-      id: prodID,
-      title: document.querySelector(`#${domProductID} h1`).innerText,
-      imageUrl: document.querySelector(`#${domProductID} img`).src,
-      price: document.querySelector(`#${domProductID} .product-details span`)
-        .childNodes[0].data,
-    };
-
-    displayProductOnCart(product);
-  }
 
   // remove from cart
   if (e.target.className === "remove") {
@@ -91,7 +75,7 @@ function displayProductOnDOM(product) {
                 ${product.price}
               <span> $ </span>
             </span>
-            <button class="shop-item-btn btn">ADD TO CART</button>
+            <button class="shop-item-btn btn"  onclick="addToCart('${product.id}')">ADD TO CART</button>
         </div>
     </div>
   `;
@@ -99,20 +83,20 @@ function displayProductOnDOM(product) {
   productsList.innerHTML += newProduct;
 }
 
-function displayProductOnCart(product) {
+function displayProductOnCart(item) {
   let cartItems = document.querySelector("#cart .cart-items");
 
   let new_cart_item = document.createElement("div");
-  new_cart_item.id = `in-cart-${product.id}`;
+  new_cart_item.id = `in-cart-${item.id}`;
   new_cart_item.className = "cart-row";
   new_cart_item.innerHTML = `    
        <span class="cart-item cart-column">
-           <img class="cart-img" src="${product.imageUrl}" alt="">
-           <span>${product.title}</span>
+           <img class="cart-img" src="${item.imageUrl}" alt="">
+           <span>${item.title}</span>
        </span>
-       <span class="cart-price cart-column">${product.price} $</span>
+       <span class="cart-price cart-column">${item.price} $</span>
        <span class="cart-quantity cart-column">
-           <input class="cart-qty-inp" type="number" min="1" value="1" required>
+           <input class="cart-qty-inp" type="number" min="1" value="${item.cartItem.quantity}"  required>
            <button class="remove">REMOVE</button>
        </span>
      `;
@@ -202,4 +186,31 @@ function updateTotalPrice() {
 
   //set total on DOM
   document.getElementById("total-value").innerText = total;
+}
+
+async function addToCart(prodID) {
+  try {
+    let res = await axios.post("http://localhost:3000/cart", {
+      productId: prodID,
+    });
+
+    console.log(res);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function fetchCart() {
+  try {
+    let res = await axios.get("http://localhost:3000/cart");
+    // console.log(res.data);
+
+    // display on cart
+    res.data.map((item) => {
+      console.log(item);
+      displayProductOnCart(item);
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
