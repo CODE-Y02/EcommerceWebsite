@@ -1,14 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    let res = await axios.get("http://localhost:3000/products");
-
-    // console.log(res.data.products);
-    document.getElementById("products").innerHTML = "";
-    res.data.products.map((product) => {
-      //   console.log(product);
-      displayProductOnDOM(product);
-    });
-
+    fetchProducts(1);
     //fetch cart
     fetchCart();
   } catch (error) {
@@ -211,7 +203,7 @@ async function addToCart(prodID) {
 async function fetchCart() {
   try {
     let res = await axios.get("http://localhost:3000/cart");
-    console.log(res.data);
+    // console.log(res.data);
 
     // display on cart
     document.querySelector("#cart .cart-items").innerHTML = "";
@@ -223,5 +215,61 @@ async function fetchCart() {
     document.querySelector(".cart-number").innerText = res.data.length;
   } catch (error) {
     console.log(error);
+  }
+}
+
+// fetch all
+async function fetchProducts(page) {
+  try {
+    let res = await axios.get(`http://localhost:3000/products?page=${page}`);
+
+    console.log(res.data);
+    //handle pgaination
+    pagination(res.data.prevPg, page, res.data.nextPg);
+
+    document.getElementById("products").innerHTML = "";
+    res.data.products.map((product) => {
+      //   console.log(product);
+      displayProductOnDOM(product);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//handle pagingion
+function pagination(prev, curr, next) {
+  document.getElementById("currentPg").innerText = curr;
+  if (prev) {
+    const prevbtn = document.getElementById("prevPg");
+    prevbtn.style.visibility = "visible";
+    prevbtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      fetchProducts(curr + 1);
+    });
+  }
+
+  if (next) {
+    const nextBtn = document.getElementById("nextPg");
+    nextBtn.style.visibility = "visible";
+    nextBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      fetchProducts(curr + 1);
+    });
+  }
+  if (!prev) {
+    const prevbtn = document.getElementById("prevPg");
+    prevbtn.style.visibility = "hidden";
+    prevbtn.removeEventListener("click", (e) => {
+      e.preventDefault();
+    });
+  }
+
+  if (!next) {
+    const nextBtn = document.getElementById("nextPg");
+    nextBtn.style.visibility = "hidden";
+    nextBtn.removeEventListener("click", (e) => {
+      e.preventDefault();
+    });
   }
 }
