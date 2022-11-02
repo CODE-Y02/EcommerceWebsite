@@ -79,9 +79,6 @@ function displayProductOnCart(item) {
      `;
 
   cartItems.appendChild(new_cart_item);
-
-  //update price
-  updateTotalPrice();
 }
 
 // hideCart
@@ -171,19 +168,37 @@ async function addToCart(prodID) {
   }
 }
 
-async function fetchCart() {
+async function fetchCart(page) {
+  if (!page) page = 1;
   try {
-    let res = await axios.get("http://localhost:3000/cart");
-    // console.log(res.data);
+    let res = await axios.get(`http://localhost:3000/cart?page=${page}`);
 
+    const {
+      data: { cartItems, totalPrice, totalProds, ...pagiData },
+    } = res;
+    // console.log(totalPrice);
+
+    const { hasNextPage, hasPrevPage, nextPg, prevPg, lastPage } = pagiData;
     // display on cart
     document.querySelector("#cart .cart-items").innerHTML = "";
-    res.data.map((item) => {
+    cartItems.map((item) => {
       // console.log(item);
       displayProductOnCart(item);
     });
 
-    document.querySelector(".cart-number").innerText = res.data.length;
+    pagination(
+      page,
+      hasPrevPage,
+      hasNextPage,
+      prevPg,
+      nextPg,
+      lastPage,
+      "cartPagi-wrap",
+      fetchCart
+    );
+
+    document.querySelector(".cart-number").innerText = totalProds;
+    document.getElementById("total-value").innerText = totalPrice;
   } catch (error) {
     console.log(error);
   }
@@ -194,9 +209,18 @@ async function fetchProducts(page) {
   try {
     let res = await axios.get(`http://localhost:3000/products?page=${page}`);
     const { hasNextPage, hasPrevPage, nextPg, prevPg, lastPage } = res.data;
-    console.log();
+    // console.log();
     //handle pgaination
-    pagination(page, hasPrevPage, hasNextPage, prevPg, nextPg, lastPage);
+    pagination(
+      page,
+      hasPrevPage,
+      hasNextPage,
+      prevPg,
+      nextPg,
+      lastPage,
+      "pagination-wrap",
+      fetchProducts
+    );
 
     document.getElementById("products").innerHTML = "";
     res.data.products.map((product) => {
@@ -209,18 +233,27 @@ async function fetchProducts(page) {
 }
 
 //handle pagingion
-function pagination(currPg, hasPrev, hasNext, prevPg, nextPg, lastPage) {
-  let paginationBox = document.getElementById("pagination-wrap");
+function pagination(
+  currPg,
+  hasPrev,
+  hasNext,
+  prevPg,
+  nextPg,
+  lastPage,
+  paginationLocID,
+  cb
+) {
+  let paginationBox = document.getElementById(`${paginationLocID}`);
   paginationBox.innerHTML = "";
 
   let currBtn, nextBtn, prevBtn, lastBtn, firstBtn;
   if (hasPrev) {
     prevBtn = document.createElement("button");
-    prevBtn.className = "pagi-btn";
-    prevBtn.id = "prevPg";
+    prevBtn.className = "pagi-btn prevPg";
+
     prevBtn.innerText = prevPg;
     prevBtn.addEventListener("click", () => {
-      fetchProducts(prevPg);
+      cb(prevPg);
     });
 
     //if previous exist then first page is also avail
@@ -228,7 +261,7 @@ function pagination(currPg, hasPrev, hasNext, prevPg, nextPg, lastPage) {
     firstBtn.className = "pagi-btn";
     firstBtn.innerText = "<<";
     firstBtn.addEventListener("click", () => {
-      fetchProducts(1);
+      cb(1);
     });
 
     paginationBox.appendChild(firstBtn);
@@ -237,19 +270,19 @@ function pagination(currPg, hasPrev, hasNext, prevPg, nextPg, lastPage) {
 
   if (currPg) {
     currBtn = document.createElement("button");
-    currBtn.className = "pagi-btn";
-    currBtn.id = "currentPg";
+    currBtn.className = "pagi-btn currentPg";
+
     currBtn.innerText = currPg;
 
     paginationBox.appendChild(currBtn);
   }
   if (hasNext) {
     nextBtn = document.createElement("button");
-    nextBtn.className = "pagi-btn";
-    nextBtn.id = "nextPg";
+    nextBtn.className = "pagi-btn nextPg";
+
     nextBtn.innerText = nextPg;
     nextBtn.addEventListener("click", () => {
-      fetchProducts(nextPg);
+      cb(nextPg);
     });
 
     //if next exist then last page is also avail
@@ -257,7 +290,7 @@ function pagination(currPg, hasPrev, hasNext, prevPg, nextPg, lastPage) {
     lastBtn.className = "pagi-btn";
     lastBtn.innerText = ">>";
     lastBtn.addEventListener("click", () => {
-      fetchProducts(lastPage);
+      cb(lastPage);
     });
 
     paginationBox.appendChild(nextBtn);

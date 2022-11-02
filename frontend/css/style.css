@@ -286,9 +286,11 @@ footer {
 } */
 
 /* pagination */
-#pagination-wrap {
+#pagination-wrap,
+#cartPagi-wrap {
   display: flex;
   flex-direction: row;
+  padding: 2rem;
   justify-content: center;
   align-items: center;
   /* background-color: bisque; */
@@ -307,12 +309,12 @@ footer {
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.75);
 }
 
-#nextPg,
-#prevPg {
+.nextPg,
+.prevPg {
   padding: 0.3rem 0.8rem;
 }
 
-#currentPg {
+.currentPg {
   padding: 0.5rem 1rem;
   background-color: black;
   color: cyan;
