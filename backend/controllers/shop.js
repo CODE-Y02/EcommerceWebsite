@@ -33,10 +33,13 @@ exports.getProducts = (req, res, next) => {
         total: totalProds,
         hasNextPage: limit * page < totalProds,
         hasPrevPage: page > 1,
+        nextPg: page + 1,
+        prevPg: page - 1,
         lastPage: Math.ceil(totalProds / limit),
       });
     })
     .catch((err) => {
+      res.status(500).json({ Success: false, error: err.message });
       console.log(err);
     });
 };
