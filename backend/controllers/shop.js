@@ -3,23 +3,17 @@ const Cart = require("../models/cart");
 
 exports.getProducts = (req, res, next) => {
   let page = parseInt(req.query.page);
-  let limit = 2;
+  let limit = 2; //ITEM PER PAGE
+  let totalProds;
+  let skip = (page - 1) * limit;
 
   if (!page) {
     res.status(400).json({ Success: false, message: "BAD REQUEST" });
   }
 
-  let skip = (page - 1) * limit;
-
-  let nextPg = false;
-  let prevPg = true;
-  let totalProds;
-  if (page == 1) prevPg = false;
-  //next pg logic
   Product.count()
     .then((productsCount) => {
       totalProds = productsCount;
-      if (page * limit < totalProds) nextPg = true;
 
       return Product.findAll({
         offset: skip,
@@ -36,10 +30,10 @@ exports.getProducts = (req, res, next) => {
       res.json({
         products,
         Success: true,
-        nextPg: nextPg,
-        prevPg: prevPg,
         total: totalProds,
-        limit: limit,
+        hasNextPage: limit * page < totalProds,
+        hasPrevPage: page > 1,
+        lastPage: Math.ceil(totalProds / limit),
       });
     })
     .catch((err) => {
