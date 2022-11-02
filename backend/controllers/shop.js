@@ -1,16 +1,43 @@
 const Product = require("../models/product");
 const Cart = require("../models/cart");
 
-exports.getProducts = (req, res, next) => {
-  let page = parseInt(req.query.page);
-  let limit = 2; //ITEM PER PAGE
-  let totalProds;
-  let skip = (page - 1) * limit;
+exports.getProducts = async (req, res, next) => {
+  try {
+    let page = parseInt(req.query.page);
+    let limit = 2; //ITEM PER PAGE
+    let totalProds = 0;
+    let skip = (page - 1) * limit;
 
-  if (!page) {
-    res.status(400).json({ Success: false, message: "BAD REQUEST" });
+    if (!page) {
+      return res.status(400).json({ Success: false, message: "BAD REQUEST" });
+    }
+
+    totalProds = await Product.count();
+    const lastPage = Math.ceil(totalProds / limit);
+
+    if (page > lastPage) {
+      return res.status(404).json({ Success: false, error: "PAGE NOT FOUND " });
+    }
+
+    let products = await Product.findAll({
+      offset: skip,
+      limit: 2,
+    });
+    res.json({
+      products,
+      Success: true,
+      total: totalProds,
+      hasNextPage: limit * page < totalProds,
+      hasPrevPage: page > 1,
+      nextPg: page + 1,
+      prevPg: page - 1,
+      lastPage: lastPage,
+    });
+  } catch (err) {
+    res.status(500).json({ Success: false, error: err.message });
+    console.log(err);
   }
-
+  /*
   Product.count()
     .then((productsCount) => {
       totalProds = productsCount;
@@ -42,10 +69,15 @@ exports.getProducts = (req, res, next) => {
       res.status(500).json({ Success: false, error: err.message });
       console.log(err);
     });
+
+  */
 };
 
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
+
+  /*  
+  
   // Product.findAll({ where: { id: prodId } })
   //   .then(products => {
   //     res.render('shop/product-detail', {
@@ -55,6 +87,8 @@ exports.getProduct = (req, res, next) => {
   //     });
   //   })
   //   .catch(err => console.log(err));
+ */
+
   Product.findByPk(prodId)
     .then((product) => {
       // product = product[0];   // if use syntax of findAll
@@ -125,7 +159,7 @@ exports.getCart = async (req, res, next) => {
     console.log(error);
     res.status(error.status).json({ error: error.message });
   }
-
+  /*
   // req.user
   //   .getCart()
   //   .then((cart) => {
@@ -143,6 +177,7 @@ exports.getCart = async (req, res, next) => {
   //       .catch((err) => console.log(err));
   //   })
   //   .catch((err) => console.log(err));
+  */
 };
 
 exports.postCart = (req, res, next) => {
