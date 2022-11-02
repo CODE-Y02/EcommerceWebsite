@@ -82,24 +82,55 @@ exports.getIndex = (req, res, next) => {
     });
 };
 
-exports.getCart = (req, res, next) => {
-  req.user
-    .getCart()
-    .then((cart) => {
-      return cart
-        .getProducts()
-        .then((products) => {
-          // res.render("shop/cart", {
-          //   path: "/cart",
-          //   pageTitle: "Your Cart",
-          //   products: products,
-          // })
+exports.getCart = async (req, res, next) => {
+  try {
+    let page = parseInt(req.query.page) || 1;
+    let limit = 2;
 
-          res.json(products);
-        })
-        .catch((err) => console.log(err));
-    })
-    .catch((err) => console.log(err));
+    let startLim = (page - 1) * limit; // limit of data chunck to be send to front end
+    let endLim = page * limit; //   limit of data chunck to be send to front end
+    let userCart = await req.user.getCart();
+
+    let cartItems = await userCart.getProducts();
+
+    let cartItemsOnPg = [...cartItems].slice(startLim, endLim);
+    // console.log("\n \n \n");
+    // console.log(cartItemsOnPg);
+    // console.log("\n \n \n");
+    // cartItems.length --> total cart items
+
+    res.json({
+      Success: true,
+      totalProds: cartItems.length,
+      hasNextPage: limit * page < cartItems.length,
+      hasPrevPage: page > 1,
+      nextPg: page + 1,
+      prevPg: page - 1,
+      lastPage: Math.ceil(cartItems.length / limit),
+      cartItems: cartItemsOnPg,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(error.status).json({ error: error.message });
+  }
+
+  // req.user
+  //   .getCart()
+  //   .then((cart) => {
+  //     return cart
+  //       .getProducts()
+  //       .then((products) => {
+  //         // res.render("shop/cart", {
+  //         //   path: "/cart",
+  //         //   pageTitle: "Your Cart",
+  //         //   products: products,
+  //         // })
+
+  //         res.json(products);
+  //       })
+  //       .catch((err) => console.log(err));
+  //   })
+  //   .catch((err) => console.log(err));
 };
 
 exports.postCart = (req, res, next) => {
