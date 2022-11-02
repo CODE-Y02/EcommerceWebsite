@@ -94,6 +94,17 @@ exports.getCart = async (req, res, next) => {
     let cartItems = await userCart.getProducts();
 
     let cartItemsOnPg = [...cartItems].slice(startLim, endLim);
+
+    let totalPrice = 0;
+
+    cartItems.map((product) => {
+      const {
+        price,
+        cartItem: { quantity },
+      } = product;
+      totalPrice += Math.round(price * quantity * 100) / 100;
+    });
+
     // console.log("\n \n \n");
     // console.log(cartItemsOnPg);
     // console.log("\n \n \n");
@@ -101,6 +112,7 @@ exports.getCart = async (req, res, next) => {
 
     res.json({
       Success: true,
+      totalPrice,
       totalProds: cartItems.length,
       hasNextPage: limit * page < cartItems.length,
       hasPrevPage: page > 1,
