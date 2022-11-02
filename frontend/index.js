@@ -1,11 +1,7 @@
-document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    fetchProducts(1);
-    //fetch cart
-    fetchCart();
-  } catch (error) {
-    console.log(error);
-  }
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("dom is loded");
+  fetchProducts(1);
+  fetchCart();
 });
 
 document.querySelector(".cart-holder").addEventListener("click", (e) => {
@@ -14,30 +10,16 @@ document.querySelector(".cart-holder").addEventListener("click", (e) => {
   showCart();
 });
 
-// click event on ecomm
-const ecoom = document.getElementById("Ecomm");
-ecoom.addEventListener("click", (e) => {
+document.getElementById("display-cart").addEventListener("click", showCart);
+
+document.getElementById("cart").addEventListener("click", (e) => {
   e.preventDefault();
 
-  // remove from cart
-  if (e.target.className === "remove") {
-    const cart_item_id = e.target.parentElement.parentElement.id;
-    removeFromCart(cart_item_id);
-  }
+  if (e.target.className == "cancel") hideCart();
 
-  //display cart
-  if (e.target.id === "display-cart" || e.target.className == "cart-holder") {
-    showCart();
-    // console.log(document.querySelector("#cart"));
-  }
-  // hide cart
-  if (e.target.className == "cancel") {
-    hideCart();
-  }
-
-  //purchase
-  if (e.target.className == "purchase-btn") {
-    purchase();
+  if (e.target.className == "remove") {
+    const cartItemID = e.target.parentElement.parentElement.id;
+    removeFromCart(cartItemID);
   }
 });
 
@@ -119,7 +101,8 @@ function removeFromCart(cart_item_id) {
   if (qty == 1) {
     document.getElementById(`${cart_item_id}`).remove();
     //update cart item number at top
-    cartCounter(0, 1);
+    let cartNum = document.querySelector(".cart-number");
+    cartNum.innerText = parseInt(cartNum.innerText) - 1;
   } else {
     document.querySelector(`#${cart_item_id} input`).value = qty - 1;
   }
@@ -127,18 +110,6 @@ function removeFromCart(cart_item_id) {
   //updateprice
   updateTotalPrice();
 }
-
-// //inc dec cart count
-// function cartCounter(inc, dec) {
-//   let count = document.querySelector(".cart-number");
-//   if (inc) {
-//     count.innerText = Number(count.innerText) + 1;
-//   }
-//   if (dec) {
-//     count.innerText = Number(count.innerText) - 1;
-//   }
-//   return count.innerText;
-// }
 
 //create notification
 function createNotification(msg) {
@@ -222,10 +193,10 @@ async function fetchCart() {
 async function fetchProducts(page) {
   try {
     let res = await axios.get(`http://localhost:3000/products?page=${page}`);
-
-    console.log(res.data);
+    const { hasNextPage, hasPrevPage, nextPg, prevPg, lastPage } = res.data;
+    console.log();
     //handle pgaination
-    pagination(res.data.prevPg, page, res.data.nextPg);
+    pagination(page, hasPrevPage, hasNextPage, prevPg, nextPg, lastPage);
 
     document.getElementById("products").innerHTML = "";
     res.data.products.map((product) => {
@@ -238,38 +209,58 @@ async function fetchProducts(page) {
 }
 
 //handle pagingion
-function pagination(prev, curr, next) {
-  document.getElementById("currentPg").innerText = curr;
-  if (prev) {
-    const prevbtn = document.getElementById("prevPg");
-    prevbtn.style.visibility = "visible";
-    prevbtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      fetchProducts(curr + 1);
+function pagination(currPg, hasPrev, hasNext, prevPg, nextPg, lastPage) {
+  let paginationBox = document.getElementById("pagination-wrap");
+  paginationBox.innerHTML = "";
+
+  let currBtn, nextBtn, prevBtn, lastBtn, firstBtn;
+  if (hasPrev) {
+    prevBtn = document.createElement("button");
+    prevBtn.className = "pagi-btn";
+    prevBtn.id = "prevPg";
+    prevBtn.innerText = prevPg;
+    prevBtn.addEventListener("click", () => {
+      fetchProducts(prevPg);
     });
+
+    //if previous exist then first page is also avail
+    firstBtn = document.createElement("button");
+    firstBtn.className = "pagi-btn";
+    firstBtn.innerText = "<<";
+    firstBtn.addEventListener("click", () => {
+      fetchProducts(1);
+    });
+
+    paginationBox.appendChild(firstBtn);
+    paginationBox.appendChild(prevBtn);
   }
 
-  if (next) {
-    const nextBtn = document.getElementById("nextPg");
-    nextBtn.style.visibility = "visible";
-    nextBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      fetchProducts(curr + 1);
-    });
-  }
-  if (!prev) {
-    const prevbtn = document.getElementById("prevPg");
-    prevbtn.style.visibility = "hidden";
-    prevbtn.removeEventListener("click", (e) => {
-      e.preventDefault();
-    });
-  }
+  if (currPg) {
+    currBtn = document.createElement("button");
+    currBtn.className = "pagi-btn";
+    currBtn.id = "currentPg";
+    currBtn.innerText = currPg;
 
-  if (!next) {
-    const nextBtn = document.getElementById("nextPg");
-    nextBtn.style.visibility = "hidden";
-    nextBtn.removeEventListener("click", (e) => {
-      e.preventDefault();
+    paginationBox.appendChild(currBtn);
+  }
+  if (hasNext) {
+    nextBtn = document.createElement("button");
+    nextBtn.className = "pagi-btn";
+    nextBtn.id = "nextPg";
+    nextBtn.innerText = nextPg;
+    nextBtn.addEventListener("click", () => {
+      fetchProducts(nextPg);
     });
+
+    //if next exist then last page is also avail
+    lastBtn = document.createElement("button");
+    lastBtn.className = "pagi-btn";
+    lastBtn.innerText = ">>";
+    lastBtn.addEventListener("click", () => {
+      fetchProducts(lastPage);
+    });
+
+    paginationBox.appendChild(nextBtn);
+    paginationBox.appendChild(lastBtn);
   }
 }

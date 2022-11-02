@@ -296,7 +296,7 @@ footer {
 
 .pagi-btn {
   margin: 5px 10px;
-  padding: 0.5rem 1rem;
+  padding: 0.2rem 0.5rem;
   font-weight: 600;
   background-color: cyan;
   border: 1px solid lightslategray;
@@ -305,4 +305,15 @@ footer {
   -webkit-box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.75);
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.75);
+}
+
+#nextPg,
+#prevPg {
+  padding: 0.3rem 0.8rem;
+}
+
+#currentPg {
+  padding: 0.5rem 1rem;
+  background-color: black;
+  color: cyan;
 }
