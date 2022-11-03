@@ -270,7 +270,7 @@ exports.postOrder = async (req, res, next) => {
     let userCart = await req.user.getCart();
     let cartItems = await userCart.getProducts();
 
-    if (!cartItems || []) {
+    if (!cartItems.length || !cartItems) {
       res.status(400).json({ success: false, message: "CART IS EMPTY" });
       return;
     }
