@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log("dom is loded");
   fetchProducts(1);
-  fetchCart();
+  fetchCart(1);
 });
 
 document.querySelector(".cart-holder").addEventListener("click", (e) => {
@@ -307,13 +307,13 @@ async function placeOrder() {
   try {
     let res = await axios.post("http://localhost:3000/order");
 
-    const { message } = res.data;
+    const { message, orderID } = res.data;
 
     console.log(res);
     //refresh cart
     fetchCart();
     hideCart();
-    createNotification(message);
+    createNotification(`Successfuuly ${message} with orderID= ${orderID}`);
   } catch (error) {
     console.log(error);
   }

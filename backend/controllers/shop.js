@@ -292,6 +292,7 @@ exports.postOrder = async (req, res, next) => {
     res.json({
       success: true,
       message: "ORDER PLACED",
+      orderID: order.id,
     });
   } catch (error) {
     console.log(error);
