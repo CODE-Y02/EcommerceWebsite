@@ -174,7 +174,6 @@ async function addToCart(prodID) {
 }
 
 async function fetchCart(page) {
-  if (!page) page = 1;
   try {
     let res = await axios.get(`http://localhost:3000/cart?page=${page}`);
 
@@ -310,8 +309,12 @@ async function placeOrder() {
 
     const { message } = res.data;
 
-    // console.log(message);
+    console.log(res);
+    //refresh cart
+    fetchCart();
     hideCart();
     createNotification(message);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 }
