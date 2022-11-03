@@ -268,7 +268,6 @@ exports.postCartDeleteProduct = (req, res, next) => {
 exports.postOrder = async (req, res, next) => {
   try {
     let userCart = await req.user.getCart();
-
     let cartItems = await userCart.getProducts();
 
     if (!cartItems || []) {
@@ -281,11 +280,6 @@ exports.postOrder = async (req, res, next) => {
     cartItems.map((itemsObj) => {
       const { cartItem, price } = itemsObj;
       orderTotal += Math.round(price * cartItem.quantity * 100) / 100;
-
-      console.log("\n \n \n \n");
-      // console.log(price, "  ", cartItem.quantity);
-      // console.log(cartItems);
-      console.log("\n ");
       return;
     });
 
@@ -295,25 +289,13 @@ exports.postOrder = async (req, res, next) => {
     await userCart.setProducts(null);
     // NOTE await userCart.removeProducts() does not work
 
-    // let p = await order.getProducts();
-
-    console.log("\n \n \n \n");
-    // console.log(orderItem);
-    // console.log(cartItems);
-
-    console.log("\n \n \n \n");
-
     res.json({
       success: true,
       message: "ORDER PLACED",
-      // p,
-      // orderTotal,
     });
   } catch (error) {
-    console.log("\n \n \n \n");
     console.log(error);
     res.status(500).json({ success: false, error: error });
-    console.log("\n \n \n \n");
   }
 };
 
