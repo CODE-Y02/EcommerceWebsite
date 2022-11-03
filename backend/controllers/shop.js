@@ -264,6 +264,61 @@ exports.postCartDeleteProduct = (req, res, next) => {
     });
 };
 
+//post order
+exports.postOrder = async (req, res, next) => {
+  try {
+    let userCart = await req.user.getCart();
+
+    let cartItems = await userCart.getProducts();
+
+    let orderTotal = 0;
+    let orderedProds = cartItems.map((itemsObj) => {
+      const {
+        title,
+        price,
+        imageUrl,
+        description,
+        cartItem: { productId, cartId, quantity, createdAt, updatedAt },
+      } = itemsObj;
+
+      orderTotal += Math.round(price * quantity * 100) / 100;
+      return {
+        productId,
+        title,
+        price,
+        quantity,
+        imageUrl,
+        description,
+        createdAt,
+        updatedAt,
+      };
+    });
+
+    let order = await req.user.createOrder({ totalAmount: orderTotal });
+    // let orderItem = await order.addProducts({ ...orderedProds });
+
+    order.addProducts([...orderedProds]);
+
+    console.log("\n \n \n \n");
+    // console.log(orderItem);
+    console.log("\n \n \n \n");
+
+    let p = order.getProducts();
+    res.json({
+      success: true,
+      message: "ORDER PLACED",
+      orderedProds,
+      order,
+      p,
+    });
+  } catch (error) {
+    console.log("\n \n \n \n");
+    console.log(error);
+    res.status(500).json({ success: false, error });
+    console.log("\n \n \n \n");
+  }
+};
+
 exports.getOrders = (req, res, next) => {
   res.render("shop/orders", {
     path: "/orders",

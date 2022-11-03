@@ -21,6 +21,8 @@ app.set("views", "views");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+const Order = require("./models/order");
+const OrderItem = require("./models/order-item");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -56,6 +58,13 @@ Cart.belongsTo(User);
 Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 
+User.hasMany(Order);
+Order.belongsTo(User);
+
+Order.belongsToMany(Product, { through: OrderItem });
+Product.belongsToMany(Order, { through: OrderItem });
+
+/*
 sequelize
   // .sync({ force: true })
   .sync()
@@ -79,3 +88,27 @@ sequelize
   .catch((err) => {
     console.log(err);
   });
+*/
+
+const startApp = async () => {
+  try {
+    await sequelize.sync();
+    let user = await User.findByPk(1);
+    if (!user) {
+      user = await User.create({ name: "admin", email: "test@test.com" });
+    }
+
+    let cart = await user.getCart();
+    if (!cart) {
+      cart = await user.createCart();
+    }
+
+    app.listen(3000);
+  } catch (error) {
+    console.log("\n \n \n \n ");
+    console.log({ errorMsg: error.message, error });
+    console.log("\n \n \n \n ");
+  }
+};
+
+startApp();
