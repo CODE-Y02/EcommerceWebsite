@@ -180,7 +180,7 @@ async function fetchCart(page) {
     const {
       data: { cartItems, totalPrice, totalProds, ...pagiData },
     } = res;
-    // console.log(totalPrice);
+    // console.log(pagiData);
 
     const { hasNextPage, hasPrevPage, nextPg, prevPg, lastPage } = pagiData;
     // display on cart
@@ -312,6 +312,7 @@ async function placeOrder() {
     console.log(res);
     //refresh cart
     fetchCart();
+    //hidecart
     hideCart();
     createNotification(`Successfuuly ${message} with orderID= ${orderID}`);
   } catch (error) {
