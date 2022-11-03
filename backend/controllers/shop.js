@@ -125,7 +125,7 @@ exports.getCart = async (req, res, next) => {
     let endLim = page * limit; //   limit of data chunck to be send to front end
     let userCart = await req.user.getCart();
 
-    let cartItems = await userCart.getProducts();
+    let cartItems = (await userCart.getProducts()) || [];
 
     let cartItemsOnPg = [...cartItems].slice(startLim, endLim);
 
@@ -271,50 +271,48 @@ exports.postOrder = async (req, res, next) => {
 
     let cartItems = await userCart.getProducts();
 
-    let orderTotal = 0;
-    let orderedProds = cartItems.map((itemsObj) => {
-      const {
-        title,
-        price,
-        imageUrl,
-        description,
-        cartItem: { productId, cartId, quantity, createdAt, updatedAt },
-      } = itemsObj;
+    if (!cartItems || []) {
+      res.status(400).json({ success: false, message: "CART IS EMPTY" });
+      return;
+    }
 
-      orderTotal += Math.round(price * quantity * 100) / 100;
-      return {
-        productId,
-        title,
-        price,
-        quantity,
-        imageUrl,
-        description,
-        createdAt,
-        updatedAt,
-      };
+    let orderTotal = 0;
+
+    cartItems.map((itemsObj) => {
+      const { cartItem, price } = itemsObj;
+      orderTotal += Math.round(price * cartItem.quantity * 100) / 100;
+
+      console.log("\n \n \n \n");
+      // console.log(price, "  ", cartItem.quantity);
+      // console.log(cartItems);
+      console.log("\n ");
+      return;
     });
 
     let order = await req.user.createOrder({ totalAmount: orderTotal });
-    // let orderItem = await order.addProducts({ ...orderedProds });
+    await order.addProducts(cartItems);
 
-    order.addProducts([...orderedProds]);
+    await userCart.setProducts(null);
+    // NOTE await userCart.removeProducts() does not work
+
+    // let p = await order.getProducts();
 
     console.log("\n \n \n \n");
     // console.log(orderItem);
+    // console.log(cartItems);
+
     console.log("\n \n \n \n");
 
-    let p = order.getProducts();
     res.json({
       success: true,
       message: "ORDER PLACED",
-      orderedProds,
-      order,
-      p,
+      // p,
+      // orderTotal,
     });
   } catch (error) {
     console.log("\n \n \n \n");
     console.log(error);
-    res.status(500).json({ success: false, error });
+    res.status(500).json({ success: false, error: error });
     console.log("\n \n \n \n");
   }
 };

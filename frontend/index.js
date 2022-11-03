@@ -21,6 +21,11 @@ document.getElementById("cart").addEventListener("click", (e) => {
     const cartItemID = e.target.parentElement.parentElement.id;
     removeFromCart(cartItemID);
   }
+
+  // purchase
+  if (e.target.className == "purchase-btn") {
+    placeOrder();
+  }
 });
 
 // handle change of qty
@@ -296,4 +301,17 @@ function pagination(
     paginationBox.appendChild(nextBtn);
     paginationBox.appendChild(lastBtn);
   }
+}
+
+// order now
+async function placeOrder() {
+  try {
+    let res = await axios.post("http://localhost:3000/order");
+
+    const { message } = res.data;
+
+    // console.log(message);
+    hideCart();
+    createNotification(message);
+  } catch (error) {}
 }
