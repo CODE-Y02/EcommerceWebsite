@@ -116,6 +116,7 @@ exports.getIndex = (req, res, next) => {
     });
 };
 
+//get cart
 exports.getCart = async (req, res, next) => {
   try {
     let page = parseInt(req.query.page) || 1;
@@ -294,6 +295,10 @@ exports.postOrder = async (req, res, next) => {
     });
 
     let order = await req.user.createOrder({ totalAmount: orderTotal });
+
+    // let p = products.map((prod) => {
+    //   return order.addProduct(prod);
+    // });
     await order.addProducts(cartItems);
 
     // await cartItems.map((itemsObj) => {
@@ -306,29 +311,43 @@ exports.postOrder = async (req, res, next) => {
     //   await order.addProduct();
     // }
 
-    // await userCart.setProducts(null);
+    await userCart.setProducts(null);
     // NOTE await userCart.removeProducts() does not work
 
-    let p = await order.getProducts();
     res.json({
       success: true,
       message: "ORDER PLACED",
       orderID: order.id,
       cartItems,
+      orderPlaced,
       // products,
       // p,
     });
   } catch (error) {
+    console.log("\n \n \n \n");
     console.log(error);
+    console.log("\n \n \n \n");
+
     res.status(500).json({ success: false, error: error });
   }
 };
 
-exports.getOrders = (req, res, next) => {
-  res.render("shop/orders", {
-    path: "/orders",
-    pageTitle: "Your Orders",
-  });
+exports.getOrders = async (req, res, next) => {
+  // res.render("shop/orders", {
+  //   path: "/orders",
+  //   pageTitle: "Your Orders",
+  // });
+  try {
+    let orders = await req.user.getOrders();
+
+    let p = orders.map((order) => {
+      return order.getProducts();
+    });
+
+    Promise.all(p).then((prods) => res.json(prods));
+  } catch (error) {
+    res.status(500).json(error);
+  }
 };
 
 exports.getCheckout = (req, res, next) => {
