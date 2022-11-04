@@ -1,0 +1,33 @@
+#order-list-wrap {
+  /* background-color: rgb(117, 117, 117); */
+  text-align: center;
+  width: 100vw;
+}
+
+#order-list-head,
+#order-list {
+  background-color: antiquewhite;
+  padding: 0.5rem 1rem;
+  margin: 0 10px;
+  display: flex;
+
+  border: 1px solid lightslategray;
+}
+
+#order-list-head {
+  font-weight: 600;
+  color: black;
+}
+#order-list li {
+  margin: 2px 5px;
+  display: flex;
+  width: 100%;
+  /* background-color: rgb(255, 36, 36); */
+  color: rgb(95, 95, 95);
+}
+
+.orderId,
+.orderTime,
+.orderTotal {
+  flex: auto;
+}
