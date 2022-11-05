@@ -311,6 +311,7 @@ exports.postOrder = async (req, res, next) => {
   }
 };
 
+//get orders
 exports.getOrders = async (req, res, next) => {
   try {
     let orders = await req.user.getOrders();
@@ -319,7 +320,7 @@ exports.getOrders = async (req, res, next) => {
       return order.getProducts();
     });
 
-    Promise.all(p).then((prods) => res.json(prods));
+    Promise.all(p).then((prods) => res.json(prods)); // we are sending list of all products
   } catch (error) {
     res.status(500).json(error);
   }

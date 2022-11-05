@@ -26,21 +26,24 @@
     <main>
       <section id="order-list-wrap">
         <h2>Orders</h2>
-        <div id="order-list-head">
-          <span class="orderId">orderId</span>
-          <span class="orderTime">orderTime</span>
-          <span class="orderTotal">orderTotal</span>
-          <span></span>
+        <div class="order-head">
+          <span class="orderId"> orderId</span>
+          <span class="prodID"> productId</span>
+          <span class="prodTitle"> Name</span>
+          <span class="prodQty"> quantity</span>
+          <span class="orderTime"> Order Time</span>
         </div>
-        <ol id="order-list">
-          <li>
-            <span class="orderId">orderId</span>
-            <span class="orderTime">orderTime</span>
-            <span class="orderTotal">orderTotal</span>
-            <button>products</button>
-          </li>
-          <div id="ordered-products"></div>
-        </ol>
+        <div id="orders-box">
+          <!-- 
+             <div id="order${orderId}p${productId}${updatedAt}"  class="order-row">
+    <span class="orderId">  ${orderId}<span>
+    <span class="prodID">  ${productId}<span>
+    <span class="prodTitle">  ${title}<span>
+    <span class="prodQty">  ${quantity}<span>
+    <span class="orderTime">  ${updatedAt}<span>    
+  </div>
+           -->
+        </div>
       </section>
     </main>
 
@@ -67,5 +70,10 @@
         </ul>
       </div>
     </footer>
+
+    <!-- orders js -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="./order.js"></script>
   </body>
 </html>

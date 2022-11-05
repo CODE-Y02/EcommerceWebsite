@@ -1,33 +1,40 @@
 #order-list-wrap {
   /* background-color: rgb(117, 117, 117); */
   text-align: center;
-  width: 100vw;
+  /* width: 100vw; */
+  margin-top: 1rem;
 }
 
-#order-list-head,
-#order-list {
-  background-color: antiquewhite;
-  padding: 0.5rem 1rem;
-  margin: 0 10px;
+#orders-box {
+  padding: 1rem;
+  /* margin: 0.5rem; */
+  /* background-color: antiquewhite; */
+}
+
+.order-row,
+.order-head {
   display: flex;
-
-  border: 1px solid lightslategray;
+  background-color: white;
+  margin: 2px 0;
+  padding: 0.2rem 0.5rem;
 }
 
-#order-list-head {
+.order-row span,
+.order-head span {
+  flex: 0.2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   font-weight: 600;
-  color: black;
-}
-#order-list li {
-  margin: 2px 5px;
-  display: flex;
-  width: 100%;
-  /* background-color: rgb(255, 36, 36); */
-  color: rgb(95, 95, 95);
+  padding: 0.2px;
+  border: 1px solid black;
+
+  min-width: 100px;
+  min-height: 24px;
 }
 
-.orderId,
-.orderTime,
-.orderTotal {
-  flex: auto;
+.order-head {
+  margin: 0 1rem;
+  margin-top: 5px;
 }
