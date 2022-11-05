@@ -278,29 +278,33 @@ exports.postOrder = async (req, res, next) => {
 
     let orderTotal = 0;
 
-    let products = cartItems.map((itemsObj) => {
+    // cartItems.map((itemsObj) => {
+    //   const {
+    //     cartItem: { quantity, cartId, productId, createdAt, updatedAt },
+    //     price,
+    //     ...other
+    //   } = itemsObj;
+    //   orderTotal += Math.round(price * quantity * 100) / 100;
+    // });
+
+    let order = await req.user.createOrder();
+
+    // let p = products.map((prod) => {
+    //   return order.addProduct(prod);
+    // });
+    // await order.addProducts(cartItems);
+
+    let p = cartItems.map((itemsObj) => {
       const {
         cartItem: { quantity, cartId, productId, createdAt, updatedAt },
         price,
         ...other
       } = itemsObj;
       orderTotal += Math.round(price * quantity * 100) / 100;
-
-      return {
-        productId,
-        quantity,
-        createdAt,
-        updatedAt,
-      };
+      return order.addProduct(productId, { through: { quantity } });
     });
 
-    let order = await req.user.createOrder({ totalAmount: orderTotal });
-
-    // let p = products.map((prod) => {
-    //   return order.addProduct(prod);
-    // });
-    await order.addProducts(cartItems);
-
+    order.update({ totalAmount: orderTotal });
     // await cartItems.map((itemsObj) => {
     //   const { cartItem, ...other } = itemsObj;
     //   order.addProduct(cartItem);
@@ -311,6 +315,9 @@ exports.postOrder = async (req, res, next) => {
     //   await order.addProduct();
     // }
 
+    await Promise.all(p);
+
+    let prods = await order.getProducts();
     await userCart.setProducts(null);
     // NOTE await userCart.removeProducts() does not work
 
@@ -319,7 +326,7 @@ exports.postOrder = async (req, res, next) => {
       message: "ORDER PLACED",
       orderID: order.id,
       cartItems,
-      orderPlaced,
+      prods,
       // products,
       // p,
     });
