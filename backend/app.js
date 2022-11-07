@@ -1,5 +1,5 @@
 const path = require("path");
-
+const dotenv = require("dotenv");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -13,6 +13,7 @@ const Cart = require("./models/cart");
 const CartItem = require("./models/cart-item");
 
 const app = express();
+dotenv.config({ path: "../.env" });
 
 app.use(cors());
 
@@ -64,38 +65,15 @@ Order.belongsTo(User);
 Order.belongsToMany(Product, { through: OrderItem });
 Product.belongsToMany(Order, { through: OrderItem });
 
-/*
-sequelize
-  // .sync({ force: true })
-  .sync()
-  .then((result) => {
-    return User.findByPk(1);
-    // console.log(result);
-  })
-  .then((user) => {
-    if (!user) {
-      return User.create({ name: "admin", email: "test@test.com" });
-    }
-    return user;
-  })
-  .then((user) => {
-    // console.log(user);
-    return user.createCart();
-  })
-  .then((cart) => {
-    app.listen(3000);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-*/
-
 const startApp = async () => {
   try {
     await sequelize.sync();
     let user = await User.findByPk(1);
     if (!user) {
-      user = await User.create({ name: "admin", email: "test@test.com" });
+      user = await User.create({
+        name: process.env.SITE_ADMIN_USERNAME,
+        email: process.env.SITE_ADMIN_EMAIL,
+      });
     }
 
     let cart = await user.getCart();
