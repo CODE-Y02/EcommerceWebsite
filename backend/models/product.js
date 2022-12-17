@@ -10,10 +10,12 @@ class Product {
 
   save() {
     const db = getDB();
-    db.collection("products")
+    return db
+      .collection("products")
       .insertOne(this)
       .then((result) => {
-        console.log(result);
+        console.log(" THEN BLOCK INSIDE SVAAE ");
+        console.log("\n FROM SAVE ====>   \n", result);
       })
       .catch((err) => {
         console.log(err);
