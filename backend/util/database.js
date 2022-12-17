@@ -1,18 +1,20 @@
-const Sequelize = require("sequelize");
-
-// with Sequelize we dont neewd to write sql queries manually
-
+const mongoDB = require("mongodb");
 const dotenv = require("dotenv");
-dotenv.config({ path: "../.env" });
+const MongoClient = mongoDB.MongoClient;
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USERNAME,
-  process.env.DB_PASS,
-  {
-    dialect: "mysql",
-    host: process.env.DB_HOST,
-  }
-);
+dotenv.config({ path: ".env" });
 
-module.exports = sequelize;
+const mongoConnect = (callback) => {
+  MongoClient.connect(
+    `mongodb+srv://${process.env.MongoUser}:${process.env.MongoPass}@${process.env.MongoCluster}.cko8cat.mongodb.net/?retryWrites=true&w=majority`
+  )
+    .then((client) => {
+      console.log("connected to mongoDB database");
+      callback(client);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+module.exports = mongoConnect;
