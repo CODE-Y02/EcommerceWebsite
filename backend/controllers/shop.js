@@ -1,37 +1,39 @@
 const Product = require("../models/product");
-const Cart = require("../models/cart");
+// const Cart = require("../models/cart");
 
 exports.getProducts = async (req, res, next) => {
   try {
     let page = parseInt(req.query.page);
     let limit = 2; //ITEM PER PAGE
-    let totalProds = 0;
-    let skip = (page - 1) * limit;
+    // let totalProds = 0;
+    // let skip = (page - 1) * limit;
 
-    if (!page) {
-      return res.status(400).json({ Success: false, message: "BAD REQUEST" });
-    }
+    // if (!page) {
+    //   return res.status(400).json({ Success: false, message: "BAD REQUEST" });
+    // }
 
-    totalProds = await Product.count();
-    const lastPage = Math.ceil(totalProds / limit);
+    // totalProds = await Product.count();
+    // const lastPage = Math.ceil(totalProds / limit);
 
-    if (page > lastPage) {
-      return res.status(404).json({ Success: false, error: "PAGE NOT FOUND " });
-    }
+    // if (page > lastPage) {
+    //   return res.status(404).json({ Success: false, error: "PAGE NOT FOUND " });
+    // }
 
-    let products = await Product.findAll({
-      offset: skip,
-      limit: 2,
-    });
+    // let products = await Product.findAll({
+    //   offset: skip,
+    //   limit: 2,
+    // });
+    let products = await Product.fetchAll();
+    // console.log(products);
     res.json({
       products,
       Success: true,
-      total: totalProds,
-      hasNextPage: limit * page < totalProds,
-      hasPrevPage: page > 1,
-      nextPg: page + 1,
-      prevPg: page - 1,
-      lastPage: lastPage,
+      // total: totalProds,
+      // hasNextPage: limit * page < totalProds,
+      // hasPrevPage: page > 1,
+      // nextPg: page + 1,
+      // prevPg: page - 1,
+      // lastPage: lastPage,
     });
   } catch (err) {
     res.status(500).json({ Success: false, error: err.message });
@@ -76,8 +78,10 @@ exports.getProducts = async (req, res, next) => {
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
 
-  /*  
-  
+  console.log(`\N\N\N PROD ID =====================> ${req.params}`);
+
+  /*
+
   // Product.findAll({ where: { id: prodId } })
   //   .then(products => {
   //     res.render('shop/product-detail', {
@@ -89,10 +93,21 @@ exports.getProduct = (req, res, next) => {
   //   .catch(err => console.log(err));
  */
 
-  Product.findByPk(prodId)
-    .then((product) => {
-      // product = product[0];   // if use syntax of findAll
+  // Product.findById(prodId)
+  //   .then((product) => {
+  //     console.log(typeof product._id);
+  //     // product = product[0];   // if use syntax of findAll
 
+  //     res.render("shop/product-detail", {
+  //       product: product,
+  //       pageTitle: product.title,
+  //       path: "/products",
+  //     });
+  //   })
+  //   .catch((err) => console.log(err));
+
+  Product.findById(prodId)
+    .then((product) => {
       res.render("shop/product-detail", {
         product: product,
         pageTitle: product.title,
@@ -103,7 +118,7 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-  Product.findAll()
+  Product.fetchAll()
     .then((products) => {
       res.render("shop/index", {
         prods: products,
@@ -116,219 +131,219 @@ exports.getIndex = (req, res, next) => {
     });
 };
 
-//get cart
-exports.getCart = async (req, res, next) => {
-  try {
-    let page = parseInt(req.query.page) || 1;
-    let limit = 2;
+// //get cart
+// exports.getCart = async (req, res, next) => {
+//   try {
+//     let page = parseInt(req.query.page) || 1;
+//     let limit = 2;
 
-    let startLim = (page - 1) * limit; // limit of data chunck to be send to front end
-    let endLim = page * limit; //   limit of data chunck to be send to front end
-    let userCart = await req.user.getCart();
+//     let startLim = (page - 1) * limit; // limit of data chunck to be send to front end
+//     let endLim = page * limit; //   limit of data chunck to be send to front end
+//     let userCart = await req.user.getCart();
 
-    let cartItems = (await userCart.getProducts()) || [];
+//     let cartItems = (await userCart.getProducts()) || [];
 
-    let cartItemsOnPg = [...cartItems].slice(startLim, endLim);
+//     let cartItemsOnPg = [...cartItems].slice(startLim, endLim);
 
-    let totalPrice = 0;
+//     let totalPrice = 0;
 
-    cartItems.map((product) => {
-      const {
-        price,
-        cartItem: { quantity },
-      } = product;
-      totalPrice += Math.round(price * quantity * 100) / 100;
-    });
+//     cartItems.map((product) => {
+//       const {
+//         price,
+//         cartItem: { quantity },
+//       } = product;
+//       totalPrice += Math.round(price * quantity * 100) / 100;
+//     });
 
-    // console.log("\n \n \n");
-    // console.log(cartItemsOnPg);
-    // console.log("\n \n \n");
-    // cartItems.length --> total cart items
+//     // console.log("\n \n \n");
+//     // console.log(cartItemsOnPg);
+//     // console.log("\n \n \n");
+//     // cartItems.length --> total cart items
 
-    res.json({
-      Success: true,
-      totalPrice,
-      totalProds: cartItems.length,
-      hasNextPage: limit * page < cartItems.length,
-      hasPrevPage: page > 1,
-      nextPg: page + 1,
-      prevPg: page - 1,
-      lastPage: Math.ceil(cartItems.length / limit),
-      cartItems: cartItemsOnPg,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(error.status).json({ error: error.message });
-  }
-  /*
-  // req.user
-  //   .getCart()
-  //   .then((cart) => {
-  //     return cart
-  //       .getProducts()
-  //       .then((products) => {
-  //         // res.render("shop/cart", {
-  //         //   path: "/cart",
-  //         //   pageTitle: "Your Cart",
-  //         //   products: products,
-  //         // })
+//     res.json({
+//       Success: true,
+//       totalPrice,
+//       totalProds: cartItems.length,
+//       hasNextPage: limit * page < cartItems.length,
+//       hasPrevPage: page > 1,
+//       nextPg: page + 1,
+//       prevPg: page - 1,
+//       lastPage: Math.ceil(cartItems.length / limit),
+//       cartItems: cartItemsOnPg,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(error.status).json({ error: error.message });
+//   }
+//   /*
+//   // req.user
+//   //   .getCart()
+//   //   .then((cart) => {
+//   //     return cart
+//   //       .getProducts()
+//   //       .then((products) => {
+//   //         // res.render("shop/cart", {
+//   //         //   path: "/cart",
+//   //         //   pageTitle: "Your Cart",
+//   //         //   products: products,
+//   //         // })
 
-  //         res.json(products);
-  //       })
-  //       .catch((err) => console.log(err));
-  //   })
-  //   .catch((err) => console.log(err));
-  */
-};
+//   //         res.json(products);
+//   //       })
+//   //       .catch((err) => console.log(err));
+//   //   })
+//   //   .catch((err) => console.log(err));
+//   */
+// };
 
-exports.postCart = (req, res, next) => {
-  //get prodID
-  const prodId = req.body.productId;
-  console.log(prodId);
-  if (!prodId) {
-    return res
-      .status(400)
-      .json({ Success: false, message: "INVALID PRODUCT ID" });
-  }
+// exports.postCart = (req, res, next) => {
+//   //get prodID
+//   const prodId = req.body.productId;
+//   console.log(prodId);
+//   if (!prodId) {
+//     return res
+//       .status(400)
+//       .json({ Success: false, message: "INVALID PRODUCT ID" });
+//   }
 
-  let fetchedCart;
-  let newQuantity = 1;
-  req.user
-    .getCart()
-    .then((cart) => {
-      fetchedCart = cart;
-      return cart.getProducts({ where: { id: prodId } });
-    })
-    .then((products) => {
-      let product;
-      // if cart already has product
-      if (products.length > 0) {
-        product = products[0];
-      }
+//   let fetchedCart;
+//   let newQuantity = 1;
+//   req.user
+//     .getCart()
+//     .then((cart) => {
+//       fetchedCart = cart;
+//       return cart.getProducts({ where: { id: prodId } });
+//     })
+//     .then((products) => {
+//       let product;
+//       // if cart already has product
+//       if (products.length > 0) {
+//         product = products[0];
+//       }
 
-      if (product) {
-        // if cart already has product then increase quantity
-        const oldQuantity = product.cartItem.quantity;
-        newQuantity = oldQuantity + 1;
-        return product;
-      }
+//       if (product) {
+//         // if cart already has product then increase quantity
+//         const oldQuantity = product.cartItem.quantity;
+//         newQuantity = oldQuantity + 1;
+//         return product;
+//       }
 
-      // new product :  not in cart yet
-      return Product.findByPk(prodId);
-    })
-    .then((product) => {
-      // error check
-      if (!product) {
-        throw Error("PRODUCT NOT FOUNT");
-      }
+//       // new product :  not in cart yet
+//       return Product.findByPk(prodId);
+//     })
+//     .then((product) => {
+//       // error check
+//       if (!product) {
+//         throw Error("PRODUCT NOT FOUNT");
+//       }
 
-      return fetchedCart.addProduct(product, {
-        through: { quantity: newQuantity },
-      });
-    })
-    .then(() => {
-      res
-        .status(200)
-        .json({ Success: true, message: "SUCCESSFULLY ADDED TO CART" });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        Success: false,
-        message: "ERROR OCCURED !!",
-        error: err.message,
-      });
-    });
-};
+//       return fetchedCart.addProduct(product, {
+//         through: { quantity: newQuantity },
+//       });
+//     })
+//     .then(() => {
+//       res
+//         .status(200)
+//         .json({ Success: true, message: "SUCCESSFULLY ADDED TO CART" });
+//     })
+//     .catch((err) => {
+//       res.status(500).json({
+//         Success: false,
+//         message: "ERROR OCCURED !!",
+//         error: err.message,
+//       });
+//     });
+// };
 
-exports.postCartDeleteProduct = (req, res, next) => {
-  const prodId = req.body.productId;
-  // Product.findByPk(prodId, (product) => {
-  //   Cart.deleteProduct(prodId, product.price);
-  //   res.redirect("/cart");
-  // });
+// exports.postCartDeleteProduct = (req, res, next) => {
+//   const prodId = req.body.productId;
+//   // Product.findByPk(prodId, (product) => {
+//   //   Cart.deleteProduct(prodId, product.price);
+//   //   res.redirect("/cart");
+//   // });
 
-  req.user
-    .getCart()
-    .then((cart) => {
-      return cart.getProducts({ where: { id: prodId } });
-    })
-    .then((products) => {
-      let product = products[0];
+//   req.user
+//     .getCart()
+//     .then((cart) => {
+//       return cart.getProducts({ where: { id: prodId } });
+//     })
+//     .then((products) => {
+//       let product = products[0];
 
-      return product.destroy();
-    })
-    .then((result) => {
-      res.redirect("/cart");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
+//       return product.destroy();
+//     })
+//     .then((result) => {
+//       res.redirect("/cart");
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// };
 
-//post order
-exports.postOrder = async (req, res, next) => {
-  try {
-    let userCart = await req.user.getCart();
-    let cartItems = await userCart.getProducts();
+// //post order
+// exports.postOrder = async (req, res, next) => {
+//   try {
+//     let userCart = await req.user.getCart();
+//     let cartItems = await userCart.getProducts();
 
-    if (!cartItems.length || !cartItems) {
-      res.status(400).json({ success: false, message: "CART IS EMPTY" });
-      return;
-    }
+//     if (!cartItems.length || !cartItems) {
+//       res.status(400).json({ success: false, message: "CART IS EMPTY" });
+//       return;
+//     }
 
-    let orderTotal = 0;
+//     let orderTotal = 0;
 
-    let order = await req.user.createOrder();
+//     let order = await req.user.createOrder();
 
-    let p = cartItems.map((itemsObj) => {
-      const {
-        cartItem: { quantity, cartId, productId, createdAt, updatedAt },
-        price,
-        ...other
-      } = itemsObj;
-      orderTotal += Math.round(price * quantity * 100) / 100;
-      return order.addProduct(productId, { through: { quantity } });
-    });
+//     let p = cartItems.map((itemsObj) => {
+//       const {
+//         cartItem: { quantity, cartId, productId, createdAt, updatedAt },
+//         price,
+//         ...other
+//       } = itemsObj;
+//       orderTotal += Math.round(price * quantity * 100) / 100;
+//       return order.addProduct(productId, { through: { quantity } });
+//     });
 
-    order.update({ totalAmount: orderTotal });
+//     order.update({ totalAmount: orderTotal });
 
-    await Promise.all(p);
+//     await Promise.all(p);
 
-    await userCart.setProducts(null);
-    // NOTE await userCart.removeProducts() does not work
+//     await userCart.setProducts(null);
+//     // NOTE await userCart.removeProducts() does not work
 
-    res.json({
-      success: true,
-      message: "ORDER PLACED",
-      orderID: order.id,
-    });
-  } catch (error) {
-    console.log("\n \n 'ERROR IN POST ORDER '\n \n");
-    console.log(error);
-    console.log("\n \n \n \n");
+//     res.json({
+//       success: true,
+//       message: "ORDER PLACED",
+//       orderID: order.id,
+//     });
+//   } catch (error) {
+//     console.log("\n \n 'ERROR IN POST ORDER '\n \n");
+//     console.log(error);
+//     console.log("\n \n \n \n");
 
-    res.status(500).json({ success: false, error: error });
-  }
-};
+//     res.status(500).json({ success: false, error: error });
+//   }
+// };
 
-//get orders
-exports.getOrders = async (req, res, next) => {
-  try {
-    let orders = await req.user.getOrders();
+// //get orders
+// exports.getOrders = async (req, res, next) => {
+//   try {
+//     let orders = await req.user.getOrders();
 
-    let p = orders.map((order) => {
-      return order.getProducts();
-    });
+//     let p = orders.map((order) => {
+//       return order.getProducts();
+//     });
 
-    Promise.all(p).then((prods) => res.json(prods)); // we are sending list of all products
-  } catch (error) {
-    res.status(500).json(error);
-  }
-};
+//     Promise.all(p).then((prods) => res.json(prods)); // we are sending list of all products
+//   } catch (error) {
+//     res.status(500).json(error);
+//   }
+// };
 
-exports.getCheckout = (req, res, next) => {
-  res.render("shop/checkout", {
-    path: "/checkout",
-    pageTitle: "Checkout",
-  });
-};
+// exports.getCheckout = (req, res, next) => {
+//   res.render("shop/checkout", {
+//     path: "/checkout",
+//     pageTitle: "Checkout",
+//   });
+// };
