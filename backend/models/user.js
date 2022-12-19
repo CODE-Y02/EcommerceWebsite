@@ -15,6 +15,30 @@ class User {
     return db.collection("users").insertOne(this);
   }
 
+  getCart() {
+    const db = getDB();
+    const prodIdsArr = this.cart.items.map((prod) => prod.productId);
+
+    return db
+      .collection("products")
+      .find({ _id: { $in: prodIdsArr } })
+      .toArray()
+      .then((products) => {
+        return products.map((p) => {
+          return {
+            ...p,
+            quantity: this.cart.items.find((itm) => {
+              // console.log(p, "\n\n\n");
+              return itm.productId.toString() === p._id.toString();
+            }).quantity,
+          };
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   addToCart(product) {
     // check if item alreay exist
 
@@ -35,6 +59,20 @@ class User {
         quantity: newQty,
       });
     }
+
+    const db = getDB();
+    return db
+      .collection("users")
+      .updateOne(
+        { _id: new mongodb.ObjectId(this._id) },
+        { $set: { cart: { items: updatedCartItems } } }
+      );
+  }
+
+  deleteItemFromCart(productId) {
+    const updatedCartItems = this.cart.items.filter(
+      (prod) => prod.productId.toString() !== productId.toString()
+    );
 
     const db = getDB();
     return db
