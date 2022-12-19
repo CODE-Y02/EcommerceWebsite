@@ -2,109 +2,33 @@ const Product = require("../models/product");
 // const Cart = require("../models/cart");
 
 exports.getProducts = async (req, res, next) => {
-  try {
-    let page = parseInt(req.query.page);
-    let limit = 2; //ITEM PER PAGE
-    // let totalProds = 0;
-    // let skip = (page - 1) * limit;
+  // try {
+  //   let products = await Product.fetchAll();
 
-    // if (!page) {
-    //   return res.status(400).json({ Success: false, message: "BAD REQUEST" });
-    // }
+  //   res.json({
+  //     products,
+  //     Success: true,
+  //   });
+  // } catch (err) {
+  //   res.status(500).json({ Success: false, error: err.message });
+  //   console.log(err);
+  // }
 
-    // totalProds = await Product.count();
-    // const lastPage = Math.ceil(totalProds / limit);
-
-    // if (page > lastPage) {
-    //   return res.status(404).json({ Success: false, error: "PAGE NOT FOUND " });
-    // }
-
-    // let products = await Product.findAll({
-    //   offset: skip,
-    //   limit: 2,
-    // });
-    let products = await Product.fetchAll();
-    // console.log(products);
-    res.json({
-      products,
-      Success: true,
-      // total: totalProds,
-      // hasNextPage: limit * page < totalProds,
-      // hasPrevPage: page > 1,
-      // nextPg: page + 1,
-      // prevPg: page - 1,
-      // lastPage: lastPage,
-    });
-  } catch (err) {
-    res.status(500).json({ Success: false, error: err.message });
-    console.log(err);
-  }
-  /*
-  Product.count()
-    .then((productsCount) => {
-      totalProds = productsCount;
-
-      return Product.findAll({
-        offset: skip,
-        limit: 2,
-      });
-    })
+  Product.fetchAll()
     .then((products) => {
-      // res.render("shop/product-list", {
-      //   prods: products,
-      //   pageTitle: "All Products",
-      //   path: "/products",
-      // });
-
-      res.json({
-        products,
-        Success: true,
-        total: totalProds,
-        hasNextPage: limit * page < totalProds,
-        hasPrevPage: page > 1,
-        nextPg: page + 1,
-        prevPg: page - 1,
-        lastPage: Math.ceil(totalProds / limit),
+      res.render("shop/product-list", {
+        prods: products,
+        pageTitle: "All Products",
+        path: "/products",
       });
     })
     .catch((err) => {
-      res.status(500).json({ Success: false, error: err.message });
       console.log(err);
     });
-
-  */
 };
 
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
-
-  // console.log(`\N\N\N PROD ID =====================> ${req.params}`);
-
-  /*
-
-  // Product.findAll({ where: { id: prodId } })
-  //   .then(products => {
-  //     res.render('shop/product-detail', {
-  //       product: products[0],
-  //       pageTitle: products[0].title,
-  //       path: '/products'
-  //     });
-  //   })
-  //   .catch(err => console.log(err));
- */
-
-  // Product.findById(prodId)
-  //   .then((product) => {
-  //     console.log(typeof product._id);
-  //     // product = product[0];   // if use syntax of findAll
-
-  //     res.render("shop/product-detail", {
-  //       product: product,
-  //       pageTitle: product.title,
-  //       path: "/products",
-  //     });
-  //   })
-  //   .catch((err) => console.log(err));
 
   Product.findById(prodId)
     .then((product) => {
@@ -135,35 +59,26 @@ exports.getIndex = (req, res, next) => {
 //get cart
 exports.getCart = async (req, res, next) => {
   // try {
-  //   let page = parseInt(req.query.page) || 1;
-  //   let limit = 2;
-  //   let startLim = (page - 1) * limit; // limit of data chunck to be send to front end
-  //   let endLim = page * limit; //   limit of data chunck to be send to front end
-  //   let userCart = await req.user.getCart();
-  //   let cartItems = (await userCart.getProducts()) || [];
-  //   let cartItemsOnPg = [...cartItems].slice(startLim, endLim);
+  //   let cartProds = await req.user.getCart();
   //   let totalPrice = 0;
-  //   cartItems.map((product) => {
-  //     const {
-  //       price,
-  //       cartItem: { quantity },
-  //     } = product;
+  //   cartProds.map((product) => {
+  //     const { price, quantity } = product;
   //     totalPrice += Math.round(price * quantity * 100) / 100;
   //   });
   //   // console.log("\n \n \n");
   //   // console.log(cartItemsOnPg);
   //   // console.log("\n \n \n");
   //   // cartItems.length --> total cart items
-  //   res.json({
+  //   res.status(200).json({
   //     Success: true,
   //     totalPrice,
-  //     totalProds: cartItems.length,
-  //     hasNextPage: limit * page < cartItems.length,
-  //     hasPrevPage: page > 1,
-  //     nextPg: page + 1,
-  //     prevPg: page - 1,
-  //     lastPage: Math.ceil(cartItems.length / limit),
-  //     cartItems: cartItemsOnPg,
+  //     totalProds: cartProds.length,
+  //     // hasNextPage: limit * page < cartItems.length,
+  //     // hasPrevPage: page > 1,
+  //     // nextPg: page + 1,
+  //     // prevPg: page - 1,
+  //     // lastPage: Math.ceil(cartItems.length / limit),
+  //     cartItems: cartProds,
   //   });
   // } catch (error) {
   //   console.log(error);
@@ -266,6 +181,9 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .deleteItemFromCart(prodId)
     .then((result) => {
       res.redirect("/cart");
+      // res
+      //   .status(200)
+      //   .json({ success: true, message: "Item removed from cart" });
     })
     .catch((err) => {
       console.log(err);
