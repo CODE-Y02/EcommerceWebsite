@@ -176,7 +176,7 @@ exports.getIndex = (req, res, next) => {
 //     console.log(error);
 //     res.status(error.status).json({ error: error.message });
 //   }
-//   /*
+//
 //   // req.user
 //   //   .getCart()
 //   //   .then((cart) => {
@@ -194,67 +194,78 @@ exports.getIndex = (req, res, next) => {
 //   //       .catch((err) => console.log(err));
 //   //   })
 //   //   .catch((err) => console.log(err));
-//   */
+//
 // };
 
-// exports.postCart = (req, res, next) => {
-//   //get prodID
-//   const prodId = req.body.productId;
-//   console.log(prodId);
-//   if (!prodId) {
-//     return res
-//       .status(400)
-//       .json({ Success: false, message: "INVALID PRODUCT ID" });
-//   }
+exports.postCart = (req, res, next) => {
+  //get prodID
+  const prodId = req.body.productId;
+  console.log(prodId);
+  if (!prodId) {
+    return res
+      .status(400)
+      .json({ Success: false, message: "INVALID PRODUCT ID" });
+  }
 
-//   let fetchedCart;
-//   let newQuantity = 1;
-//   req.user
-//     .getCart()
-//     .then((cart) => {
-//       fetchedCart = cart;
-//       return cart.getProducts({ where: { id: prodId } });
-//     })
-//     .then((products) => {
-//       let product;
-//       // if cart already has product
-//       if (products.length > 0) {
-//         product = products[0];
-//       }
+  // let fetchedCart;
+  // let newQuantity = 1;
+  // req.user
+  //   .getCart()
+  //   .then((cart) => {
+  //     fetchedCart = cart;
+  //     return cart.getProducts({ where: { id: prodId } });
+  //   })
+  //   .then((products) => {
+  //     let product;
+  //     // if cart already has product
+  //     if (products.length > 0) {
+  //       product = products[0];
+  //     }
 
-//       if (product) {
-//         // if cart already has product then increase quantity
-//         const oldQuantity = product.cartItem.quantity;
-//         newQuantity = oldQuantity + 1;
-//         return product;
-//       }
+  //     if (product) {
+  //       // if cart already has product then increase quantity
+  //       const oldQuantity = product.cartItem.quantity;
+  //       newQuantity = oldQuantity + 1;
+  //       return product;
+  //     }
 
-//       // new product :  not in cart yet
-//       return Product.findByPk(prodId);
-//     })
-//     .then((product) => {
-//       // error check
-//       if (!product) {
-//         throw Error("PRODUCT NOT FOUNT");
-//       }
+  //     // new product :  not in cart yet
+  //     return Product.findByPk(prodId);
+  //   })
+  //   .then((product) => {
+  //     // error check
+  //     if (!product) {
+  //       throw Error("PRODUCT NOT FOUNT");
+  //     }
 
-//       return fetchedCart.addProduct(product, {
-//         through: { quantity: newQuantity },
-//       });
-//     })
-//     .then(() => {
-//       res
-//         .status(200)
-//         .json({ Success: true, message: "SUCCESSFULLY ADDED TO CART" });
-//     })
-//     .catch((err) => {
-//       res.status(500).json({
-//         Success: false,
-//         message: "ERROR OCCURED !!",
-//         error: err.message,
-//       });
-//     });
-// };
+  //     return fetchedCart.addProduct(product, {
+  //       through: { quantity: newQuantity },
+  //     });
+  //   })
+  //   .then(() => {
+  //     res
+  //       .status(200)
+  //       .json({ Success: true, message: "SUCCESSFULLY ADDED TO CART" });
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).json({
+  //       Success: false,
+  //       message: "ERROR OCCURED !!",
+  //       error: err.message,
+  //     });
+  //   });
+
+  Product.findById(prodId)
+    .then((product) => {
+      return req.user.addToCart(product);
+    })
+    .then((result) => {
+      console.log(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 // exports.postCartDeleteProduct = (req, res, next) => {
 //   const prodId = req.body.productId;
