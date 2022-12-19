@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // e.preventDefault();
   console.log("dom is loded");
-  fetchProducts(1);
-  fetchCart(1);
+  fetchProducts();
+  fetchCart();
 });
 
 document.querySelector(".cart-holder").addEventListener("click", (e) => {
@@ -19,7 +20,9 @@ document.getElementById("cart").addEventListener("click", (e) => {
 
   if (e.target.className == "remove") {
     const cartItemID = e.target.parentElement.parentElement.id;
-    removeFromCart(cartItemID);
+
+    // removeFromCart(cartItemID);
+    // deleteUtemFromCart(cartItemID);
   }
 
   // purchase
@@ -47,7 +50,7 @@ function displayProductOnDOM(product) {
   let productsList = document.getElementById("products");
 
   let newProduct = `
-    <div class="item" id="item-${product.id}">
+    <div class="item" id="item-${product._id}">
         <h1>${product.title}</h1>
         <div class="img-wrap">
             <img src=${product.imageUrl} alt=${product.title} />
@@ -57,7 +60,7 @@ function displayProductOnDOM(product) {
                 ${product.price}
               <span> $ </span>
             </span>
-            <button class="shop-item-btn btn"  onclick="addToCart('${product.id}')">ADD TO CART</button>
+            <button class="shop-item-btn btn"  onclick="addToCart('${product._id}')">ADD TO CART</button>
         </div>
     </div>
   `;
@@ -66,10 +69,11 @@ function displayProductOnDOM(product) {
 }
 
 function displayProductOnCart(item) {
+  console.log("CART ITEM =======>", item);
   let cartItems = document.querySelector("#cart .cart-items");
 
   let new_cart_item = document.createElement("div");
-  new_cart_item.id = `in-cart-${item.id}`;
+  new_cart_item.id = `in-cart-${item._id}`;
   new_cart_item.className = "cart-row";
   new_cart_item.innerHTML = `    
        <span class="cart-item cart-column">
@@ -78,8 +82,8 @@ function displayProductOnCart(item) {
        </span>
        <span class="cart-price cart-column">${item.price} $</span>
        <span class="cart-quantity cart-column">
-           <input class="cart-qty-inp" type="number" min="1" value="${item.cartItem.quantity}"  required>
-           <button class="remove">REMOVE</button>
+           <input class="cart-qty-inp" type="number" min="1" value="${item.quantity}"  required>
+           <button class="remove" onclick="deleteUtemFromCart('${item._id}')" >REMOVE</button>
        </span>
      `;
 
@@ -96,21 +100,35 @@ function showCart() {
 }
 
 //remove from cart
-function removeFromCart(cart_item_id) {
-  let qty = document.querySelector(`#${cart_item_id} input`).value;
-  qty = Number(qty);
+// function removeFromCart(cart_item_id) {
+//   let qty = document.querySelector(`#${cart_item_id} input`).value;
+//   qty = Number(qty);
 
-  if (qty == 1) {
-    document.getElementById(`${cart_item_id}`).remove();
-    //update cart item number at top
-    let cartNum = document.querySelector(".cart-number");
-    cartNum.innerText = parseInt(cartNum.innerText) - 1;
-  } else {
-    document.querySelector(`#${cart_item_id} input`).value = qty - 1;
+//   if (qty == 1) {
+//     document.getElementById(`${cart_item_id}`).remove();
+//     //update cart item number at top
+//     let cartNum = document.querySelector(".cart-number");
+//     cartNum.innerText = parseInt(cartNum.innerText) - 1;
+//   } else {
+//     document.querySelector(`#${cart_item_id} input`).value = qty - 1;
+//   }
+
+//   //updateprice
+//   updateTotalPrice();
+// }
+
+// DEleteFROM CART
+async function deleteUtemFromCart(itemId) {
+  try {
+    let res = await axios.post(`http://localhost:3000/cart-delete-item`, {
+      productId: itemId,
+    });
+    console.log("deleted ", res);
+    // once deleted
+    fetchCart();
+  } catch (error) {
+    console.log(error);
   }
-
-  //updateprice
-  updateTotalPrice();
 }
 
 //create notification
@@ -175,60 +193,64 @@ async function addToCart(prodID) {
 
 async function fetchCart(page) {
   try {
-    let res = await axios.get(`http://localhost:3000/cart?page=${page}`);
+    let res = await axios.get(`http://localhost:3000/cart`);
 
-    const {
-      data: { cartItems, totalPrice, totalProds, ...pagiData },
-    } = res;
-    // console.log(pagiData);
+    // const {
+    //   data: { cartItems, totalPrice, totalProds, ...pagiData },
+    // } = res;
+    console.log(res.data);
 
-    const { hasNextPage, hasPrevPage, nextPg, prevPg, lastPage } = pagiData;
+    // const { hasNextPage, hasPrevPage, nextPg, prevPg, lastPage } = pagiData;
     // display on cart
     document.querySelector("#cart .cart-items").innerHTML = "";
-    cartItems.map((item) => {
-      // console.log(item);
+
+    res.data.cartItems.map((item) => {
+      console.log(item);
       displayProductOnCart(item);
     });
 
-    pagination(
-      page,
-      hasPrevPage,
-      hasNextPage,
-      prevPg,
-      nextPg,
-      lastPage,
-      "cartPagi-wrap",
-      fetchCart
-    );
+    // pagination(
+    //   page,
+    //   hasPrevPage,
+    //   hasNextPage,
+    //   prevPg,
+    //   nextPg,
+    //   lastPage,
+    //   "cartPagi-wrap",
+    //   fetchCart
+    // );
 
-    document.querySelector(".cart-number").innerText = totalProds;
-    document.getElementById("total-value").innerText = totalPrice;
+    document.querySelector(".cart-number").innerText = res.data.totalProds;
+    document.getElementById("total-value").innerText = res.data.totalPrice;
   } catch (error) {
     console.log(error);
   }
 }
 
 // fetch all
-async function fetchProducts(page) {
+async function fetchProducts() {
   try {
-    let res = await axios.get(`http://localhost:3000/products?page=${page}`);
-    const { hasNextPage, hasPrevPage, nextPg, prevPg, lastPage } = res.data;
+    let res = await axios.get(`http://localhost:3000/products`);
+    // const { hasNextPage, hasPrevPage, nextPg, prevPg, lastPage } = res.data;
     // console.log();
+
     //handle pgaination
-    pagination(
-      page,
-      hasPrevPage,
-      hasNextPage,
-      prevPg,
-      nextPg,
-      lastPage,
-      "pagination-wrap",
-      fetchProducts
-    );
+    // pagination(
+    //   page,
+    //   hasPrevPage,
+    //   hasNextPage,
+    //   prevPg,
+    //   nextPg,
+    //   lastPage,
+    //   "pagination-wrap",
+    //   fetchProducts
+    // );
+
+    console.log(res.data.products);
 
     document.getElementById("products").innerHTML = "";
     res.data.products.map((product) => {
-      //   console.log(product);
+      // console.log(product);
       displayProductOnDOM(product);
     });
   } catch (error) {
