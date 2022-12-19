@@ -236,6 +236,33 @@ exports.postCartDeleteProduct = (req, res, next) => {
 //   }
 // };
 
+// ADD ORDER
+exports.postOrder = (req, res) => {
+  // console.log("\n\n\n start post add order  \n\n\n");
+
+  req.user
+    .addOrder()
+    .then((result) => {
+      // console.log("\n\n\n", result, "\n\n\n");
+      res.redirect("/orders");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+//
+//get orders
+exports.getOrders = async (req, res, next) => {
+  req.user.fetchOrders().then((orders) => {
+    res.render("shop/orders", {
+      path: "/orders",
+      pageTitle: "Your Orders",
+      orders: orders,
+    });
+  });
+};
+
 // //get orders
 // exports.getOrders = async (req, res, next) => {
 //   try {
