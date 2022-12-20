@@ -1,3 +1,4 @@
+const { ObjectID } = require("bson");
 const { Schema, model } = require("mongoose");
 
 const userSchema = new Schema({
@@ -50,6 +51,15 @@ userSchema.methods.addToCart = function (product) {
   this.cart = {
     items: updatedCartItems,
   };
+  return this.save();
+};
+
+userSchema.methods.deleteItemFromCart = function (productId) {
+  const updatedCartItems = this.cart.items.filter(
+    (prod) => prod.productId.toString() !== productId.toString()
+  );
+  this.cart.items = updatedCartItems;
+  // console.log(updatedCartItems[0].productId.toString(), "\n", productId);
   return this.save();
 };
 
