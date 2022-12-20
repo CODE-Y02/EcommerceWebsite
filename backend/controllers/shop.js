@@ -89,13 +89,13 @@ exports.getCart = async (req, res, next) => {
   // }
 
   req.user
-    .getCart()
-    .then((products) => {
-      // console.log("\n\n PRODS ===============> ", products);
+    .populate("cart.items.productId")
+    .then((user) => {
+      // console.log("\n\n PRODS ===============> ", user.cart.items);
       res.render("shop/cart", {
         path: "/cart",
         pageTitle: "Your Cart",
-        products: products,
+        products: user.cart.items,
       });
       // res.json(products);
     })

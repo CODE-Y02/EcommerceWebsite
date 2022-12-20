@@ -26,6 +26,33 @@ const userSchema = new Schema({
   },
 });
 
+userSchema.methods.addToCart = function (product) {
+  // note dont user arrow function here
+  // check if item alreay exist
+
+  const cartProdIdx = this.cart.items.findIndex(
+    (cartItem) => cartItem.productId.toString() === product._id.toString()
+  );
+  // updates cart items
+  let updatedCartItems = [...this.cart.items];
+
+  let newQty = 1;
+
+  if (cartProdIdx >= 0) {
+    newQty = this.cart.items[cartProdIdx].quantity + 1;
+    updatedCartItems[cartProdIdx].quantity = newQty;
+  } else {
+    updatedCartItems.push({
+      productId: product._id,
+      quantity: newQty,
+    });
+  }
+  this.cart = {
+    items: updatedCartItems,
+  };
+  return this.save();
+};
+
 module.exports = model("User", userSchema);
 
 // const mongodb = require("mongodb");
