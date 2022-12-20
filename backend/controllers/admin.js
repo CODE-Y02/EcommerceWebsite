@@ -13,12 +13,13 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  // const userId = req.user._id;
+
   const product = new Product({
     title,
     imageUrl,
     price,
     description,
+    userId: req.user._id, // we can also pass req.user and mongoose will pick id from it
   });
   product
     .save()
@@ -33,8 +34,12 @@ exports.postAddProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.find()
+  Product.find({ userId: req.user })
+    // .select("title -_id")
+    // .populate("userId", "name email")
     .then((products) => {
+      // console.log("\n\n\n\n", products, "\n\n\n\n");
+
       res.render("admin/products", {
         prods: products,
         pageTitle: "Admin Products",

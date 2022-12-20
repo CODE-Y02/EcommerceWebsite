@@ -15,7 +15,10 @@ exports.getProducts = async (req, res, next) => {
   // }
 
   Product.find()
+    .populate("userId", "name -_id")
     .then((products) => {
+      // console.log("\n\n\n\n", products, "\n\n\n\n");
+
       res.render("shop/product-list", {
         prods: products,
         pageTitle: "All Products",
