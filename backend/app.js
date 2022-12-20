@@ -6,7 +6,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 
 // User Model
-// const User = require("./models/user.js");
+const User = require("./models/user.js");
 
 // const { mongoConnect } = require("./util/database.js");
 
@@ -29,16 +29,16 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, "public")));
 
-// app.use((req, res, next) => {
-//   User.findById("639f4e85353e5008ffd7e955")
-//     .then((user) => {
-//       req.user = new User(user.name, user.email, user.cart, user._id);
-//       // user --> is seduilize obj with sequalize methods attached to it with users info
-//       // we can add req but SHOULD NOT EDIT EXISTING FIELDS  EVEN THOUGH ITS POSSIBLE
-//       next();
-//     })
-//     .catch((err) => console.log(err));
-// });
+app.use((req, res, next) => {
+  User.findById("63a1b84fff48de741554f16e")
+    .then((user) => {
+      req.user = user;
+      // user --> is seduilize obj with sequalize methods attached to it with users info
+      // we can add req but SHOULD NOT EDIT EXISTING FIELDS  EVEN THOUGH ITS POSSIBLE
+      next();
+    })
+    .catch((err) => console.log(err));
+});
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
@@ -54,6 +54,18 @@ mongoose
     `mongodb+srv://${process.env.MongoUser}:${process.env.MongoPass}@${process.env.MongoCluster}.cko8cat.mongodb.net/${process.env.MongoDataBase}?retryWrites=true&w=majority`
   )
   .then((result) => {
+    User.findOne().then((user) => {
+      if (!user) {
+        const user = new User({
+          name: "admin",
+          email: "admin@gmail.com",
+          cart: {
+            items: [],
+          },
+        });
+        user.save();
+      }
+    });
     app.listen(3000);
   })
   .catch((err) => {
